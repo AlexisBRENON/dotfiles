@@ -25,7 +25,7 @@
 URxvt.scrollstyle: plain
 
 ! Fonts
-URxvt.font: xft:DejaVuSansMono:size=10
+URxvt.font: xft:monospace:size=11
 
 ! URL matching for opening
 URxvt.perl-ext-common: default,matcher
