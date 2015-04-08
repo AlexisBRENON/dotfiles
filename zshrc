@@ -19,7 +19,7 @@ antigen bundle sudo
 antigen bundle taskwarrior
 antigen bundle arialdomartini/oh-my-git
 
-antigen theme arialdomartini/oh-my-git-themes oppa-lana-style
+antigen theme https://github.com/AlexisBRENON/dotfiles AlexisBRENON
 
 antigen-apply
 
