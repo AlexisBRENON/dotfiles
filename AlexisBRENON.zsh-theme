@@ -32,7 +32,7 @@ function enrich_append {
     local color=$3
     if [[ $flag != "true" ]]; then text=' '; fi
 
-    echo -n "${color}${text} "
+    echo -n "${color}${text}  "
 }
 
 function separating_line {
@@ -205,13 +205,16 @@ function git_line {
 }
 
 
-display_prompt () {
+function echo_prompt {
    separating_line
    git_line
    working_dir_line
    last_command_status_line
 }
 
-unset contains
+function update_prompt {
+    PS1="$(echo_prompt)"
+}
 
-PROMPT=$(display_prompt)
+autoload -U add-zsh-hook
+add-zsh-hook precmd update_prompt
