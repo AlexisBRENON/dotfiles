@@ -16,7 +16,24 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(archlinux common-aliases extract git sudo taskwarrior)
+local distrib=$(cat /etc/os-release | grep -i -e "ID_LIKE")
+if [[ -z $distrib ]]
+  then
+  distrib=$(cat /etc/os-release | grep -i -e "ID")
+fi
+distrib=$(echo $distrib | cut -d= -f2)
+case $distrib in
+  debian)
+  # Nothing to do
+  ;;
+  arch)
+    distrib=archlinux
+    ;;
+  *)
+    distrib=""
+    ;;
+esac
+plugins=($distrib common-aliases extract git sudo taskwarrior)
 
 # User configuration
 #
@@ -25,7 +42,7 @@ plugins=(archlinux common-aliases extract git sudo taskwarrior)
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 
   # Make termite support LS_COLOR
-eval $(dircolors ~/.dircolors)
+eval $(dircolors ~/.dircolors 2>/dev/null)
 
 # Load Oh-my-zsh
 source $ZSH/oh-my-zsh.sh
