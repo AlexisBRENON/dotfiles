@@ -41,7 +41,7 @@ function separating_line {
 }
 
 function last_command_status_line {
-    local prompt="%{%F{%(?.green.red)}%}⚡%{%f%} "
+    local prompt="%{%(?.%F{green}.%F{red})%}⚡%{%f%} "
     echo $prompt
 }
 
