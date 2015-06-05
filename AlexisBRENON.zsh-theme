@@ -116,10 +116,10 @@ function git_line {
     local yellow_on_red="%K{red}%F{yellow}"
 
 ## on filesystem
-    prompt="${black_on_white} ${git_prompt_is_a_git_repo_symbol}"
-    prompt+=$(enrich_append $has_stashed \
+    prompt="${black_on_white} ${git_prompt_is_a_git_repo_symbol}  "
+    prompt+=$(enrich_append $has_stashes \
             ${git_prompt_has_stashes_symbol} \
-            "${yellow_on_white}")
+            "${black_on_white}")
     prompt+=$(enrich_append $has_untracked_files \
             ${git_prompt_has_untracked_files_symbol} \
             "${red_on_white}")
