@@ -57,20 +57,32 @@ function git_line {
         then
         return 1
     fi
-    
-    : ${git_prompt_is_a_git_repo_symbol:=''}
-    : ${git_prompt_has_stashes_symbol:=''}
-    : ${git_prompt_has_untracked_files_symbol:=''}
-    : ${git_prompt_has_modifications_symbol:=''}
-    : ${git_prompt_has_deletions_symbol:=''}
-    : ${git_prompt_has_adds_symbol:=''}
-    : ${git_prompt_has_cached_deletions_symbol:=''}
-    : ${git_prompt_has_cached_modifications_symbol:=''}
-    : ${git_prompt_ready_to_commit_symbol:=''}
 
-    : ${git_prompt_has_diverged_symbol:=''}
-    : ${git_prompt_should_push_symbol:=''}
-    : ${git_prompt_is_on_a_tag_symbol:=''}
+    local hector_git_symbols="::::::::::::◤"
+    local laptop_git_symbols="::::::::::::"
+    local hostname=$(hostname)
+    if [[ $hostname == hector2 ]]
+    then
+      git_symbols_array=(${(s/:/)hector_git_symbols})
+    elif [[ $hostname == TODO:laptop ]]
+    then
+      git_symbols_array=(${(s/:/)laptop_git_symbols})
+    fi
+
+    : ${git_prompt_is_a_git_repo_symbol:=$git_symbols_array[1]}
+    : ${git_prompt_has_stashes_symbol:=$git_symbols_array[2]}
+    : ${git_prompt_has_untracked_files_symbol:=$git_symbols_array[3]}
+    : ${git_prompt_has_modifications_symbol:=$git_symbols_array[4]}
+    : ${git_prompt_has_deletions_symbol:=$git_symbols_array[5]}
+    : ${git_prompt_has_adds_symbol:=$git_symbols_array[6]}
+    : ${git_prompt_has_cached_deletions_symbol:=$git_symbols_array[7]}
+    : ${git_prompt_has_cached_modifications_symbol:=$git_symbols_array[8]}
+    : ${git_prompt_ready_to_commit_symbol:=$git_symbols_array[9]}
+
+    : ${git_prompt_has_diverged_symbol:=$git_symbols_array[10]}
+    : ${git_prompt_should_push_symbol:=$git_symbols_array[11]}
+    : ${git_prompt_is_on_a_tag_symbol:=$git_symbols_array[12]}
+    : ${git_prompt_separator_symbol:=$git_symbols_array[13]}
 #    : ${git_prompt_needs_to_merge_symbol:=''}
 #    : ${git_prompt_detached_symbol:=''}
 #    : ${git_prompt_can_fast_forward_symbol:=''}
@@ -94,7 +106,7 @@ function git_line {
     local has_deletions_cached="false" # TODO
     local ready_to_commit="false" # TODO
 #    local action=${24}
-    
+
     local detached="false" # TODO
     local remote_git_status=$(git_remote_status)
     local has_upstream=$(contains $remote_git_status \
@@ -152,7 +164,7 @@ function git_line {
 #                prompt+=$(enrich_append $action "${git_prompt_has_action_in_progress_symbol} $action" "${red_on_white}")
 
 ## where
-    prompt="${prompt} ${white_on_red} ${black_on_red}"
+    prompt="${prompt} ${white_on_red}${git_prompt_separator_symbol} ${black_on_red}"
     if [[ $detached == "true" ]]; then
         prompt+=$(enrich_append $detached \
                 ${git_prompt_detached_symbol} \
@@ -161,7 +173,7 @@ function git_line {
                 prompt+=$(enrich_append $detached \
                         "(${current_commit_hash:0:7})"
                         "${black_on_red}")
-    else            
+    else
         if [[ $has_upstream != "true" ]]; then
             prompt+=$(enrich_append "true" \
                     "-- ${git_prompt_not_tracked_branch_symbol}  --  (${current_branch})" \
@@ -202,7 +214,7 @@ function git_line {
     prompt+=$(enrich_append ${is_on_a_tag} \
             "${git_prompt_is_on_a_tag_symbol} ${tag_at_current_commit}" \
             "${black_on_red}")
-    prompt+="%k%F{red}%k%f"
+    prompt+="%k%F{red}${git_prompt_separator_symbol}%k%f"
 
     echo ${prompt}
     return 0
