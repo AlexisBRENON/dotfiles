@@ -52,7 +52,11 @@ function working_dir_line {
 
 function git_line {
     # Don't display anything if not in a git repo
-    current_repository >/dev/null 2>&1 || return 1
+    local repo_url="$(current_repository)"
+    if test -z ${repo_url}
+        then
+        return 1
+    fi
     
     : ${git_prompt_is_a_git_repo_symbol:=''}
     : ${git_prompt_has_stashes_symbol:=''}
