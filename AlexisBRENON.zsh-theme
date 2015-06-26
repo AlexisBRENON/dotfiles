@@ -64,7 +64,7 @@ function git_line {
     if [[ $hostname == hector2 ]]
     then
       git_symbols_array=(${(s/:/)hector_git_symbols})
-    elif [[ $hostname == TODO:laptop ]]
+    elif [[ $hostname == BRENON-DELL ]]
     then
       git_symbols_array=(${(s/:/)laptop_git_symbols})
     fi
