@@ -1,3 +1,20 @@
+case $ZSHRC_DEBUG in
+    5|4)
+        echo "zshrc debug mode: DEBUG"
+        export DEBUG=echo
+        export INFO=echo
+        ;;
+    3|2|1)
+        echo "zshrc debug mode: INFO"
+        export DEBUG=true
+        export INFO=echo
+        ;;
+    *)
+        export DEBUG=true
+        export INFO=true
+        ;;
+esac
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -6,6 +23,7 @@ export ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 ZSH_THEME="AlexisBRENON"
+$INFO "ZSH_THEME set: $ZSH_THEME"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -22,6 +40,7 @@ if [[ -z $distrib ]]
   distrib=$(cat /etc/os-release | grep -i -e "ID")
 fi
 distrib=$(echo $distrib | cut -d= -f2)
+$DEBUG "Fetch distrib from 'os-release': $distrib"
 case $distrib in
   debian)
   # Nothing to do
@@ -33,17 +52,35 @@ case $distrib in
     distrib=""
     ;;
 esac
+$INFO "Normalized distrib: $distrib"
+
 plugins=($distrib common-aliases extract git sudo taskwarrior)
+$INFO "plugins:"
+$INFO "$plugins" | tr ' ' '\n'
+
 
 # User configuration
 #
 
   # Add your own bin/ folder to PATH
+$DEBUG "Discover paths..."
+find $HOME -path "$HOME/.*" -name "bin" -type d | while read "folder"
+do
+    $DEBUG "Adding: $folder"
+    export PATH="$folder:$PATH"
+done
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+$INFO "Discovered PATH: $PATH" | tr ':' '\n'
+
+  # Add luarocks lib to luapath
+export LUA_PATH='/home/alexis/.luarocks/share/lua/5.3/?.lua;/home/alexis/.luarocks/share/lua/5.3/?/init.lua;/usr/share/lua/5.3/?.lua;/usr/share/lua/5.3/?/init.lua;/usr/lib/lua/5.3/?.lua;/usr/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua'
+export LUA_CPATH='/home/alexis/.luarocks/lib/lua/5.3/?.so;/usr/lib/lua/5.3/?.so;/usr/lib/lua/5.3/loadall.so;./?.so'
 
   # Make termite support LS_COLOR
 eval $(dircolors ~/.dircolors 2>/dev/null)
 
 # Load Oh-my-zsh
+$INFO "Load Oh-My-Zsh..."
 source $ZSH/oh-my-zsh.sh
+$INFO "Done"
 
