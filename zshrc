@@ -56,28 +56,32 @@ $INFO "Normalized distrib: $distrib"
 
 plugins=($distrib common-aliases extract git sudo taskwarrior)
 $INFO "plugins:"
-$INFO "$plugins" | tr ' ' '\n'
+$INFO "  $plugins" | sed 's/\b /\n  /g'
 
 
 # User configuration
 #
 
-  # Add your own bin/ folder to PATH
-$DEBUG "Discover paths..."
-find $HOME -path "$HOME/.*" -name "bin" -type d | while read "folder"
-do
-    $DEBUG "Adding: $folder"
-    export PATH="$folder:$PATH"
-done
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-$INFO "Discovered PATH: $PATH" | tr ':' '\n'
+  # Add your own bin/ folders to PATH
+if [[ $(hostname) = BRENON-DELL ]]
+then
+    PATH="$PATH"
+fi
+export PATH
+$INFO "PATH:"
+$INFO "  $PATH" | sed 's/:/\n  /g'
 
-  # Add luarocks lib to luapath
-export LUA_PATH='/home/alexis/.luarocks/share/lua/5.3/?.lua;/home/alexis/.luarocks/share/lua/5.3/?/init.lua;/usr/share/lua/5.3/?.lua;/usr/share/lua/5.3/?/init.lua;/usr/lib/lua/5.3/?.lua;/usr/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua'
-export LUA_CPATH='/home/alexis/.luarocks/lib/lua/5.3/?.so;/usr/lib/lua/5.3/?.so;/usr/lib/lua/5.3/loadall.so;./?.so'
+# Host dependant configuration
+if [[ $(hostname) = BRENON-DELL ]]
+then
+    $INFO "Custom configuration for my personal laptop"
+    # Add luarocks lib to luapath
+    export LUA_PATH='/home/alexis/.luarocks/share/lua/5.3/?.lua;/home/alexis/.luarocks/share/lua/5.3/?/init.lua;/usr/share/lua/5.3/?.lua;/usr/share/lua/5.3/?/init.lua;/usr/lib/lua/5.3/?.lua;/usr/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua'
+    export LUA_CPATH='/home/alexis/.luarocks/lib/lua/5.3/?.so;/usr/lib/lua/5.3/?.so;/usr/lib/lua/5.3/loadall.so;./?.so'
 
-  # Make termite support LS_COLOR
-eval $(dircolors ~/.dircolors 2>/dev/null)
+    # Make termite support LS_COLOR
+    eval $(dircolors ~/.dircolors 2>/dev/null)
+fi
 
 # Load Oh-my-zsh
 $INFO "Load Oh-My-Zsh..."
