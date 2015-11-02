@@ -5,6 +5,7 @@ ZSH_THEME_GIT_PROMPT_CLEAN=":clean:"
 ZSH_THEME_GIT_PROMPT_STASHED=":stashed:"
 ZSH_THEME_GIT_PROMPT_UNTRACKED=":untracked:"
 ZSH_THEME_GIT_PROMPT_MODIFIED=":modified:"
+ZSH_THEME_GIT_PROMPT_RENAMED=":rename:"
 ZSH_THEME_GIT_PROMPT_ADDED=":added:"
 ZSH_THEME_GIT_PROMPT_DELETED=":deleted:"
 
@@ -102,9 +103,11 @@ function git_line {
                         ${ZSH_THEME_GIT_PROMPT_DELETED})
     local has_adds=$(contains $git_status \
                     ${ZSH_THEME_GIT_PROMPT_ADDED})
+    local has_renames=$(contains $git_status \
+                        ${ZSH_THEME_GIT_PROMPT_RENAMED})
     local has_modifications_cached="false" # TODO
     local has_deletions_cached="false" # TODO
-    local ready_to_commit="false" # TODO
+    local ready_to_commit=$has_renames # TODO
 #    local action=${24}
 
     local detached="false" # TODO
