@@ -421,6 +421,7 @@ alias df='df -kTh'
 #-------------------------------------------------------------
 # Add colors for filetype and  human-readable sizes by default on 'ls':
 alias ls='ls -h --color'
+alias l='ls -lFh'
 alias lx='ls -lXB'         #  Sort by extension.
 alias lk='ls -lSr'         #  Sort by size, biggest last.
 alias lt='ls -ltr'         #  Sort by date, most recent last.
