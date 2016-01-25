@@ -1,10 +1,10 @@
 case $ZSHRC_DEBUG in
-    5|4)
+    5|4|debug)
         echo "zshrc debug mode: DEBUG"
         export DEBUG=echo
         export INFO=echo
         ;;
-    3|2|1)
+    3|2|1|info)
         echo "zshrc debug mode: INFO"
         export DEBUG=true
         export INFO=echo
@@ -58,6 +58,10 @@ plugins=($distrib common-aliases extract git sudo taskwarrior)
 $INFO "plugins:"
 $INFO "  $plugins" | sed 's/\b /\n  /g'
 
+# Load Oh-my-zsh
+$INFO "Load Oh-My-Zsh..."
+source $ZSH/oh-my-zsh.sh
+$INFO "Done"
 
 # User configuration
 #
@@ -71,6 +75,13 @@ export PATH
 $INFO "PATH:"
 $INFO "  $PATH" | sed 's/:/\n  /g'
 
+  # Display more info in the less prompt
+export LESS="$LESS -M"
+$INFO "LESS: $LESS"
+  # Apply same kind of prompt to man
+export MANLESS="Manual page \$MAN_PN ?ltlines %lt-%lb?L/%L.:byte %bB?s/%s. .?e(END):?pB%pB\%.. (press h for help or q to quit)"
+$INFO "MANLESS: $MANLESS"
+
 # Host dependant configuration
 if [[ $(hostname) = BRENON-DELL ]]
 then
@@ -82,9 +93,3 @@ then
     # Make termite support LS_COLOR
     eval $(dircolors ~/.dircolors 2>/dev/null)
 fi
-
-# Load Oh-my-zsh
-$INFO "Load Oh-My-Zsh..."
-source $ZSH/oh-my-zsh.sh
-$INFO "Done"
-
