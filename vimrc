@@ -1,7 +1,5 @@
 set nocompatible
 
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -26,37 +24,25 @@ Plugin 'Indent-Finder' " Automatic indentation detection
 call vundle#end()            " required
 filetype plugin indent on    " required
 
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " UI Setup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+set cursorline " Highlight the current line
+
+set laststatus=2 " Always display the statusline in all windows
+set showtabline=2 " Always display the tabline, even if there is only one tab
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+
+set relativenumber " Display relative line number
+set number " Except for the current line
+
+
+syntax enable " Enable syntax highlight
+
 " Define colorscheme
 colorscheme monokai
-
-" Always show current position
-set ruler
-
-" Height of the command bar
-set cmdheight=2
-
-" Enable syntax highlight
-syntax enable
-
-" Color scheme
 set background=dark
-
-" Display more info in command bar
-set showcmd
-
-" Highlight the current line
-set cursorline
-
-" Display line number
-set nu
-
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Encoding, Platform Dependant Setup
@@ -70,8 +56,6 @@ set encoding=utf-8
 
 " Use UNIX as the std file type
 set ffs=unix
-
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tab, Indent and Wrap related
@@ -105,7 +89,7 @@ set smartcase " ... except if the search contains upper case
 nnoremap <C-L> :nohl<CR><C-L>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Mappings
+" Mappings & Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Easy insertion of HTML escape codes
@@ -113,8 +97,8 @@ imap <special><C-Space> &nbsp;
 imap <special><C-&> &amp;
 
 " Easy edition/reloading of my vim rc
-cmap vv vs $MYVIMRC<CR>
-cmap sv source $MYVIMRC<CR>
+command Vv vs $MYVIMRC
+command Sv source $MYVIMRC
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin configuration
