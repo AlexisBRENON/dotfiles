@@ -19,6 +19,7 @@ Plugin 'coot/EnchantedVim' " Persistent very magic regex
 Plugin 'Valloric/YouCompleteMe' " Autocomplete plugin
 Plugin 'kchmck/vim-coffee-script' " CoffeScript support
 Plugin 'Indent-Finder' " Automatic indentation detection
+Plugin 'vim-airline/vim-airline' " Improved status line
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -37,8 +38,8 @@ set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusl
 set relativenumber " Display relative line number
 set number " Except for the current line
 
-
 syntax enable " Enable syntax highlight
+set synmaxcol=300 " Don't try to highlight very (very) long lines
 
 " Define colorscheme
 colorscheme monokai
@@ -116,6 +117,5 @@ let g:VeryMagicSubstitute = 1 " Magic regex for substitution
 
 " Press F2 to toggle the NERDTree pane
 map <silent><F2> :NERDTreeToggle<CR>
-map! <silent><F2> :NERDTreeToggle<CR>
 
 
