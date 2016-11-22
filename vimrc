@@ -20,6 +20,7 @@ Plugin 'Valloric/YouCompleteMe' " Autocomplete plugin
 Plugin 'kchmck/vim-coffee-script' " CoffeScript support
 Plugin 'Indent-Finder' " Automatic indentation detection
 Plugin 'vim-airline/vim-airline' " Improved status line
+Plugin 'vim-pandoc/vim-pandoc' " Pandoc syntax support
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -39,7 +40,7 @@ set relativenumber " Display relative line number
 set number " Except for the current line
 
 syntax enable " Enable syntax highlight
-set synmaxcol=300 " Don't try to highlight very (very) long lines
+set synmaxcol=1000 " Don't try to highlight very (very) long lines
 
 " Define colorscheme
 colorscheme monokai
