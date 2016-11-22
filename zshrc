@@ -30,10 +30,7 @@ $INFO "ZSH_THEME set: $ZSH_THEME"
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 HIST_STAMPS="yyyy-mm-dd"
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
+# Identify the current distribution
 local distrib=$(cat /etc/os-release | grep -i -e "ID_LIKE")
 if [[ -z $distrib ]]
   then
@@ -54,6 +51,10 @@ case $distrib in
 esac
 $INFO "Normalized distrib: $distrib"
 
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
 plugins=($distrib common-aliases extract git sudo taskwarrior)
 $INFO "plugins:"
 $INFO "  $plugins" | sed 's/\b /\n  /g'
@@ -65,31 +66,28 @@ $INFO "Done"
 
 # User configuration
 #
-
-  # Add your own bin/ folders to PATH
-if [[ $(hostname) = BRENON-DELL ]]
-then
-    PATH="$PATH"
-fi
-export PATH
-$INFO "PATH:"
-$INFO "  $PATH" | sed 's/:/\n  /g'
-
+$INFO "User configuration..."
   # Display more info in the less prompt
 export LESS="$LESS -M"
-$INFO "LESS: $LESS"
+$DEBUG "LESS: $LESS"
   # Apply same kind of prompt to man
 export MANLESS="Manual page \$MAN_PN ?ltlines %lt-%lb?L/%L.:byte %bB?s/%s. .?e(END):?pB%pB\%.. (press h for help or q to quit)"
-$INFO "MANLESS: $MANLESS"
+$DEBUG "MANLESS: $MANLESS"
 
 # Host dependant configuration
 if [[ $(hostname) = BRENON-DELL ]]
 then
     $INFO "Custom configuration for my personal laptop"
+
     # Add luarocks lib to luapath
-    export LUA_PATH='/home/alexis/.luarocks/share/lua/5.3/?.lua;/home/alexis/.luarocks/share/lua/5.3/?/init.lua;/usr/share/lua/5.3/?.lua;/usr/share/lua/5.3/?/init.lua;/usr/lib/lua/5.3/?.lua;/usr/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua'
-    export LUA_CPATH='/home/alexis/.luarocks/lib/lua/5.3/?.so;/usr/lib/lua/5.3/?.so;/usr/lib/lua/5.3/loadall.so;./?.so'
+    export LUA_PATH=${HOME}'/.luarocks/share/lua/5.3/?.lua;'${HOME}'/.luarocks/share/lua/5.3/?/init.lua;/usr/share/lua/5.3/?.lua;/usr/share/lua/5.3/?/init.lua;/usr/lib/lua/5.3/?.lua;/usr/lib/lua/5.3/?/init.lua;./?.lua;./?/init.lua'
+    export LUA_CPATH=${HOME}'/.luarocks/lib/lua/5.3/?.so;/usr/lib/lua/5.3/?.so;/usr/lib/lua/5.3/loadall.so;./?.so'
 
     # Make termite support LS_COLOR
     eval $(dircolors ~/.dircolors 2>/dev/null)
+
+    # added by travis gem
+    [ -f /home/alexis/.travis/travis.sh ] && source /home/alexis/.travis/travis.sh
 fi
+
+$INFO "Done."
