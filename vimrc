@@ -21,6 +21,7 @@ Plugin 'kchmck/vim-coffee-script' " CoffeScript support
 Plugin 'Indent-Finder' " Automatic indentation detection
 Plugin 'vim-airline/vim-airline' " Improved status line
 Plugin 'vim-pandoc/vim-pandoc' " Pandoc syntax support
+Plugin 'kyuhi/vim-emoji-complete' " Find and insert emojis
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -118,5 +119,3 @@ let g:VeryMagicSubstitute = 1 " Magic regex for substitution
 
 " Press F2 to toggle the NERDTree pane
 map <silent><F2> :NERDTreeToggle<CR>
-
-
