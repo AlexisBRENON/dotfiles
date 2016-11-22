@@ -88,6 +88,8 @@ then
 
     # added by travis gem
     [ -f /home/alexis/.travis/travis.sh ] && source /home/alexis/.travis/travis.sh
+elif [[ $(hostname) = "hector2" ]]; then
+    . /home/brenon/torch/install/bin/torch-activate
 fi
 
 $INFO "Done."
