@@ -42,7 +42,7 @@ case $distrib in
   debian)
   # Nothing to do
   ;;
-  arch)
+  arch*)
     distrib=archlinux
     ;;
   *)
@@ -88,6 +88,9 @@ then
 
     # added by travis gem
     [ -f /home/alexis/.travis/travis.sh ] && source /home/alexis/.travis/travis.sh
+
+    . ~/Documents/Development/third_party/oh-my-git/base.sh
+
 elif [[ $(hostname) = "hector2" ]]; then
     . /home/brenon/torch/install/bin/torch-activate
 fi
