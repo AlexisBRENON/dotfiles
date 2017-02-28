@@ -20,8 +20,10 @@ Plugin 'Valloric/YouCompleteMe' " Autocomplete plugin
 Plugin 'kchmck/vim-coffee-script' " CoffeScript support
 Plugin 'Indent-Finder' " Automatic indentation detection
 Plugin 'vim-airline/vim-airline' " Improved status line
-Plugin 'vim-pandoc/vim-pandoc' " Pandoc syntax support
+Plugin 'vim-pandoc/vim-pandoc' " Pandoc support
+Plugin 'vim-pandoc/vim-pandoc-syntax' " Pandoc/Markdown syntax highlight
 Plugin 'kyuhi/vim-emoji-complete' " Find and insert emojis
+Plugin 'LanguageTool' " LanguageTool integration
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -100,8 +102,8 @@ imap <special><C-Space> &nbsp;
 imap <special><C-&> &amp;
 
 " Easy edition/reloading of my vim rc
-command Vv vs $MYVIMRC
-command Sv source $MYVIMRC
+command! Vv vs $MYVIMRC
+command! Sv source $MYVIMRC
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin configuration
@@ -119,3 +121,11 @@ let g:VeryMagicSubstitute = 1 " Magic regex for substitution
 
 " Press F2 to toggle the NERDTree pane
 map <silent><F2> :NERDTreeToggle<CR>
+
+" Vim-Pandoc
+let g:pandoc#modules#disabled = ["chdir"]
+
+" LanguageTool
+let g:languagetool_jar = '/usr/bin/languagetool'
+let g:languagetool_disable_rules = 'WHITESPACE_RULE,FRENCH_WHITESPACE,COMMA_PARENTHESIS_WHITESPACE'
+map <silent><F12> :LanguageToolCheck<CR>
