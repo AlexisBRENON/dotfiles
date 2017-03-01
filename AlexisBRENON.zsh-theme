@@ -54,8 +54,8 @@ function custom_build_prompt {
   local action="${24}"
   local has_pending_action=$([[ -n "${action}" ]] && echo "true")
 
-  local laptop_git_symbols="   :: : : :  : : : : : : : : : : : : : : :⭐ :🔧 : : : : : : : : : :⏩ : : : : : : : : : 
-  local hector2_git_symbols="   :▓▒░: : : :  : : : : : : : : : : : : : : :⭐ :🔧 : : :  : : : : : :⏩ : : : : : : : :   
+  local laptop_git_symbols="   :: : : :  : : : : : : : : : : : : : : :⭐ :🔧 : : : : : : : : : :⏩ : : : : : : : : : "
+  local hector2_git_symbols="   :▓▒░: : : :  : : : : : : : : : : : : : : :⭐ :🔧 : : :  : : : : : :⏩ : : : : : : :  "
   if [[ $HOST = "hector2" ]]
   then
     git_symbols_array=(${(s/:/)hector2_git_symbols})
