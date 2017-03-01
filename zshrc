@@ -92,7 +92,12 @@ then
     . ~/Documents/Development/third_party/oh-my-git/base.sh
 
 elif [[ $(hostname) = "hector2" ]]; then
+    $INFO "Custom configuration for my hector2 computer"
     . /home/brenon/torch/install/bin/torch-activate
+    export TEXMFHOME="${HOME}/.local/share/texmf"
+    export PATH="/home/brenon/.local/texlive/2016/bin/x86_64-linux:${PATH}"
+    export PATH="/home/brenon/.local/bin:${PATH}"
+    . ~/Documents/git_repos/oh-my-git/base.sh
 fi
 
 $INFO "Done."
