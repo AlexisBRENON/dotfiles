@@ -93,6 +93,9 @@ then
 
 elif [[ $(hostname) = "hector2" ]]; then
     $INFO "Custom configuration for my hector2 computer"
+    if [ $TERMINIX_ID ] || [ $VTE_VERSION ]; then
+      source /etc/profile.d/vte.sh
+    fi
     . /home/brenon/torch/install/bin/torch-activate
     export TEXMFHOME="${HOME}/.local/share/texmf"
     export PATH="/home/brenon/.local/texlive/2016/bin/x86_64-linux:${PATH}"
