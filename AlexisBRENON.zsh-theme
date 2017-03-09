@@ -44,7 +44,7 @@ function custom_build_prompt {
   local ready_to_commit=${14}
   local tag_at_current_commit=${15}
   local is_on_a_tag=${16}
-  local has_upstream=${17}
+  local upstream=${17}
   local commits_ahead=${18}
   local commits_behind=${19}
   local has_diverged=${20}
@@ -52,7 +52,7 @@ function custom_build_prompt {
   local will_rebase=${22}
   local has_stashes=${23}
   local action="${24}"
-  local has_pending_action=$([[ -n "${action}" ]] && echo "true")
+  local has_pending_action=$([[ -n "${action}" ]] && echo "true" || echo "false")
 
   local laptop_git_symbols="   :: : : :  : : : : : : : : : : : : : : :⭐ :🔧 : : : : : : : : : :⏩ : : : : : : : : : "
   local hector2_git_symbols="   :▓▒░: : : :  : : : : : : : : : : : : : : :⭐ :🔧 : : :  : : : : : :⏩ : : : : : : :  "
@@ -157,7 +157,7 @@ function custom_build_prompt {
     if [[ $detached == true ]] # Detached state
     then
       prompt+=$(enrich_append $detached $omg_detached_symbol "${white_on_red}")
-      prompt+=$(enrich_append $detached "(${current_commit_hash:0:7})" "${black_on_red}")
+      prompt+=$(enrich_append $detached " (${current_commit_hash:0:7}) " "${black_on_red}")
     elif [[ $has_upstream == false ]] # No upstream set
     then
       prompt+=$(enrich_append true "-- ${omg_not_tracked_branch_symbol} -- (${current_branch})" "${black_on_red}")
@@ -191,11 +191,11 @@ function custom_build_prompt {
       else
         local type_of_upstream=${omg_merge_tracking_branch_symbol}
       fi
-      prompt+=$(enrich_append true "(${current_branch} ${type_of_upstream} ${upstream//\/$current_branch/})" "${black_on_red}")
+      prompt+=$(enrich_append true " (${current_branch} ${type_of_upstream} ${upstream//\/$current_branch/}) " "${black_on_red}")
     fi
     prompt+=$(enrich_append ${is_on_a_tag} "${omg_is_on_a_tag_symbol} ${tag_at_current_commit}" "${black_on_red}")
 
-    prompt+="${red_on_default}${omg_separator_symbol}${reset}"
+    prompt+=" ${red_on_default}${omg_separator_symbol}${reset} "
     echo "${prompt}"
     return 0
   else
