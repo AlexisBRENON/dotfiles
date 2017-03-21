@@ -99,9 +99,9 @@ function _prompt_alexis_build_git_info {
       then
         local upstream_diff="${_prompt_alexis_git_symbols[has_diverged]}"
       elif [[ $gbg_upstream_commits_behind_num -gt 0 ]]; then
-        local upstream_diff="${_prompt_alexis_git_symbols[should_push]}"
-      elif [[ $gbg_upstream_commits_ahead_num -gt 0 ]]; then
         local upstream_diff="${_prompt_alexis_git_symbols[can_ff]}"
+      elif [[ $gbg_upstream_commits_ahead_num -gt 0 ]]; then
+        local upstream_diff="${_prompt_alexis_git_symbols[should_push]}"
       elif [[ $gbg_upstream_commits_ahead_num == 0 && $gbg_upstream_commits_behind_num == 0 ]]; then
         local upstream_diff="  "
       fi
