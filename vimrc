@@ -123,6 +123,10 @@ nm / /\v
 nm ? ?\v
 let g:VeryMagicSubstitute = 1 " Magic regex for substitution
 
+" Syntastic
+let g:syntastic_sh_checkers = ["shellcheck", "bashate", "sh"]
+let g:syntastic_sh_shellcheck_args = "-e 1090"
+
 " NERDTree
 
 " Press F2 to toggle the NERDTree pane
