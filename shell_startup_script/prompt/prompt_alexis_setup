@@ -1,0 +1,255 @@
+#
+# TODO
+#
+# Authors:
+#   Alexis BRENON
+#
+
+#
+# 16 Terminal Colors
+# -- ---------------
+#  0 black
+#  1 red
+#  2 green
+#  3 yellow
+#  4 blue
+#  5 magenta
+#  6 cyan
+#  7 white
+#  8 bright black
+#  9 bright red
+# 10 bright green
+# 11 bright yellow
+# 12 bright blue
+# 13 bright magenta
+# 14 bright cyan
+# 15 bright white
+#
+
+function prompt_alexis_separating_line {
+  _prompt_alexis_separating_line="\n"
+}
+function prompt_alexis_host_info {
+  _prompt_alexis_host_info="%n@%m "
+}
+function prompt_alexis_pwd {
+  _prompt_alexis_pwd="%{%F{green}%}%~%{%f%}\n"
+}
+function prompt_alexis_last_command_status {
+  _prompt_alexis_last_command_status="%{%(?.%F{green}.%F{red})%}⚡ %{%f%} "
+}
+
+function _prompt_alexis_build_git_info {
+  typeset -lf enrich_append
+  function enrich_append {
+    local flag=$1
+    local text=$2
+    local color=$3
+    if [[ $flag != "true" ]]; then text=$(echo ${text}|sed 's/./ /g'); fi
+
+    echo -n "${color}${text}"
+  }
+  local git_line=""
+  source $_prompt_alexis_precmd_async_data
+
+  if [[ $gbg_is_a_git_repo == "true" ]]
+  then
+
+    git_line="%F{black}%K{white}"
+    git_line+=$(enrich_append "true" "${_prompt_alexis_git_symbols[is_a_git_repo]}")
+
+    # on filesystem
+    git_line+=$(enrich_append "${gbg_repo_has_stashes}" "${_prompt_alexis_git_symbols[has_stashes]}")
+    git_line+=$(enrich_append "${gbg_workspace_has_untracked}" "${_prompt_alexis_git_symbols[has_untracked]}" "%F{red}")
+
+    git_line+=$(enrich_append "${gbg_workspace_has_modifications}" "${_prompt_alexis_git_symbols[has_workspace_mods]}")
+    git_line+=$(enrich_append "${gbg_workspace_has_deletions}" "${_prompt_alexis_git_symbols[has_workspace_dels]}")
+
+    git_line+=" %F{white}%K{yellow}${_prompt_alexis_git_symbols[separator]}%F{black} "
+
+    # in index
+    git_line+=$(enrich_append "${gbg_index_has_modifications}" "${_prompt_alexis_git_symbols[has_index_mods]}")
+    git_line+=$(enrich_append "${gbg_index_has_adds}" "${_prompt_alexis_git_symbols[has_index_adds]}")
+    git_line+=$(enrich_append "${gbg_index_has_deletions}" "${_prompt_alexis_git_symbols[has_index_dels]}")
+
+    # Operation
+    # TODO
+
+    git_line+=" %F{yellow}%K{red}${_prompt_alexis_git_symbols[separator]}%F{black} "
+
+    # Remote
+    if [[ $gbg_head_is_detached == "true" ]] # Detached state
+    then
+      git_line+=$(enrich_append "true" "${_prompt_alexis_git_symbols[detached]}" "%F{white}")
+      git_line+=$(enrich_append "true" "${gbg_head_hash:0:7}" "%F{black}")
+    elif [[ $gbg_upstream_has_upstream == "false" ]] # No upstream set
+    then
+      git_line+=$(enrich_append "true" "-- ")
+      git_line+=$(enrich_append "true" "${_prompt_alexis_git_symbols[not_tracked]}" "%F{white}")
+      git_line+=$(enrich_append "true" " --" "%F{black}")
+      git_line+=$(enrich_append "true" " (${gbg_head_branch}) ")
+    else # Standard branch
+      if [[ $gbg_upstream_commits_behind_num -gt 0 ]]; then
+        git_line+=$(enrich_append "true" " -${gbg_upstream_commits_behind_num} ")
+      else
+        git_line+=$(enrich_append "true" " -- ")
+      fi
+
+      if [[ $gbg_upstream_has_diverged == "true" ]]
+      then
+        local upstream_diff="${_prompt_alexis_git_symbols[has_diverged]}"
+      elif [[ $gbg_upstream_commits_behind_num -gt 0 ]]; then
+        local upstream_diff="${_prompt_alexis_git_symbols[should_push]}"
+      elif [[ $gbg_upstream_commits_ahead_num -gt 0 ]]; then
+        local upstream_diff="${_prompt_alexis_git_symbols[can_ff]}"
+      elif [[ $gbg_upstream_commits_ahead_num == 0 && $gbg_upstream_commits_behind_num == 0 ]]; then
+        local upstream_diff="  "
+      fi
+      git_line+=$(enrich_append "true" "${upstream_diff}" "%F{white}")
+
+      if [[ $gbg_upstream_commits_ahead_num -gt 0 ]]; then
+        git_line+=$(enrich_append true " +${gbg_upstream_commits_ahead_num} " "%F{black}")
+      else
+        git_line+=$(enrich_append true " -- " "%F{black}")
+      fi
+
+      git_line+=$(enrich_append true " (${gbg_head_branch} ${_prompt_alexis_git_symbols[${gbg_upstream_merge_type}_tracking]} ${gbg_upstream_name//\/$gbg_head_branch/}) ")
+    fi
+    git_line+=$(enrich_append ${gbg_head_is_on_tag} "${_prompt_alexis_git_symbols[tag]} ${gbg_head_tag}")
+
+    git_line+=" %F{red}%k${_prompt_alexis_git_symbols[separator]}%f"
+    echo -e "${git_line}"
+    return 0
+  else
+    return 1
+  fi
+}
+
+
+function prompt_alexis_git_info {
+  _prompt_alexis_git_info=""
+  if (( _prompt_alexis_precmd_async_pid > 0 )); then
+    # Append Git status.
+    if [[ -s "$_prompt_alexis_precmd_async_data" ]]; then
+      _prompt_alexis_git_info="$(_prompt_alexis_build_git_info)"
+      if [[ -n "${_prompt_alexis_git_info}" ]]
+      then 
+        _prompt_alexis_git_info+="\n"
+      fi
+    fi
+
+    # Reset PID.
+    _prompt_alexis_precmd_async_pid=0
+    # Redisplay prompt.
+    zle && zle reset-prompt
+  fi
+}
+
+function prompt_alexis_precmd_async {
+  # Get Git repository information.
+  if (( $+functions[gbg_git_info] )); then
+    gbg_git_info
+    export -p | grep -Ee "export gbg_" | sed 's/^export //' >! "$_prompt_alexis_precmd_async_data"
+  fi
+
+  # Signal completion to parent process.
+  kill -WINCH $$
+}
+
+function prompt_alexis_precmd {
+  setopt LOCAL_OPTIONS
+  unsetopt KSH_ARRAYS
+
+  # Kill the old process of slow commands if it is still running.
+  if (( _prompt_alexis_precmd_async_pid > 0 )); then
+    kill -KILL "$_prompt_alexis_precmd_async_pid" &>/dev/null
+  fi
+
+  # Format the git line in background
+  trap prompt_alexis_git_info WINCH
+  prompt_alexis_precmd_async &!
+  _prompt_alexis_precmd_async_pid=$!
+
+  # Format separating line
+  prompt_alexis_separating_line
+
+  # Format user/host info
+  prompt_alexis_host_info
+
+  # Format PWD.
+  prompt_alexis_pwd
+
+  # Format last command status
+  prompt_alexis_last_command_status
+}
+
+function prompt_alexis_build_prompt {
+  print -n "${_prompt_alexis_separating_line}"
+  print -n "${_prompt_alexis_git_info}"
+  print -n "${_prompt_alexis_host_info}"
+  print -n "${_prompt_alexis_pwd}"
+  print -n "${_prompt_alexis_last_command_status}"
+}
+
+function prompt_alexis_parse_git_symbols {
+  case "${_prompt_alexis_options[-s]}" in 
+    default|"")
+      local symbols="   :: : : :  : : : : : : : : : : : : : : :⭐ :🔧 : : : : : : : : : :⏩ : : : : : : : : : "
+      ;;
+    *)
+      local symbols="${_prompt_alexis_options[-s]}"
+      ;;
+  esac
+  local symbols_array=(${(s/:/)symbols})
+  local symbols_meaning=(\
+    is_a_git_repo separator "" "" ""\
+    has_stashes has_untracked "" "" ""\
+    has_workspace_mods has_workspace_dels "" "" ""\
+    has_index_mods has_index_adds has_index_dels "" ""\
+    ready_to_commit has_pending_action "" "" ""\
+    detached not_tracked "" "" ""\
+    has_diverged can_ff should_push "" ""\
+    rebase_tracking merge_tracking "" "" ""\
+    tag)
+
+  typeset -gA _prompt_alexis_git_symbols
+  for (( i = 1 ; i <= ${#symbols_array} ; i++ )) do
+    _prompt_alexis_git_symbols[${symbols_meaning[i]}]=${symbols_array[i]}
+  done
+}
+
+function prompt_alexis_setup {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent subst)
+  _prompt_alexis_precmd_async_pid=0
+  _prompt_alexis_precmd_async_data="${TMPPREFIX}-prompt_alexis_data"
+
+  zparseopts -A _prompt_alexis_options -m -symbols=s -- s:
+  prompt_alexis_parse_git_symbols
+
+  # Load required functions.
+  autoload -Uz add-zsh-hook
+
+  add-zsh-hook precmd prompt_alexis_precmd
+  
+  zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
+  zstyle ':prezto:module:editor:info:keymap:primary' format ''
+  zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format ''
+  zstyle ':prezto:module:editor:info:keymap:alternate' format ''
+
+  # Define prompts.
+  PROMPT='${(e)$(prompt_alexis_build_prompt)}${editor_info[keymap]}'
+  RPROMPT=''
+}
+
+function prompt_alexis_preview {
+  local +h PROMPT=''
+  local +h RPROMPT=''
+  local +h SPROMPT=''
+
+  editor-info 2>/dev/null
+  prompt_preview_theme 'alexis'
+}
+
+prompt_alexis_setup "$@"
