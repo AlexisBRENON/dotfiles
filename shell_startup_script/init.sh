@@ -3,70 +3,47 @@
 DEBUG() { :; }
 INFO() { :; }
 case $RC_DEBUG in
-    5|4|debug)
-        echo "rc debug mode: DEBUG"
-        DEBUG() { echo "$@" >&2; }
-        INFO() { echo "$@"; }
-        ;;
-    3|2|1|info)
-        echo "rc debug mode: INFO"
-        INFO() { echo "$@"; }
-        ;;
+  5|4|debug)
+    echo "rc debug mode: DEBUG"
+    DEBUG() { echo "$@" >&2; }
+    INFO() { echo "$@"; }
+    ;;
+  3|2|1|info)
+    echo "rc debug mode: INFO"
+    INFO() { echo "$@"; }
+    ;;
 esac
 
+source_file() {
+  if [ -r "$1" ]; then
+    DEBUG "Sourcing '$1'"
+    export RC_SOURCED_FILE="$1"
+    . "$1"
+    unset RC_SOURCED_FILE
+    return 0
+  else
+    DEBUG "'$1' file not found"
+    return 1
+  fi
+}
 
-#HIST_STAMPS="yyyy-mm-dd"
-
-#plugins=($distrib common-aliases extract git sudo taskwarrior)
-
-# Define the environment
-if [ -r "${HOME}/.config/shell/environment/init.sh" ]; then
-  INFO "Defining environment variables"
-  . "${HOME}/.config/shell/environment/init.sh"
-fi
-# Define the aliases
-if [ -r "${HOME}/.config/shell/alias/init.sh" ]; then
-  INFO "Defining aliases"
-  . "${HOME}/.config/shell/alias/init.sh"
-fi
+# Load generic configuration
+source_file "${HOME}/.config/shell/posix/init.sh"
 
 # Load shell specific configuration
-config_file=$(ls "${HOME}/.config/shell/shell-type/$(basename "${SHELL}")/init.sh" 2> /dev/null)
-if [ -r "${config_file}" ]; then
-  INFO "Sourcing '${config_file}'"
-  . "${config_file}"
-else
-  INFO "No configuration file for shell '${SHELL}'"
+
+# We cannot rely on the SHELL value which is not update when launching a different shell
+STARTING_SHELL=""
+if [ -n "${BASH}" ]; then STARTING_SHELL="$(basename "${BASH}")"
+elif [ -n "${ZSH_NAME}" ]; then STARTING_SHELL="${ZSH_NAME}"
+else STARTING_SHELL="$(basename "${SHELL}")"
 fi
 
-# Load host specific configuration 
-config_file=$(ls "${HOME}/.config/shell/host/${HOST}/init.sh" 2> /dev/null)
-if [ -r "${config_file}" ]; then
-  INFO "Sourcing '${config_file}'"
-  . "${config_file}"
-else
-  INFO "No configuration file for host '${HOST}'"
-fi
+config_file=$(ls "${HOME}/.config/shell/${STARTING_SHELL}/init.sh" 2> /dev/null)
+source_file "$config_file" || INFO "No configuration file for shell '${SHELL}'"
 
-# Load plugins
-if [ -r "${HOME}/.config/shell/plugins/init.sh" ]; then
-  INFO "Loading plugins"
-  . "${HOME}/.config/shell/plugins/init.sh"
-fi
-# TODO : move this to plugin/init.sh
-if [ -r "${HOME}/.config/shell/plugins/god-bless-git/init.sh" ] ; then
-  . "${HOME}/.config/shell/plugins/god-bless-git/init.sh"
-fi
-
-  #zgen prezto archive
-  #zgen prezto completion
-#  zgen prezto git 
-  #zgen prezto history-substring-search
-#  zgen prezto pacman
-  #zgen prezto rsync
-  #zgen prezto utility
-
-# User configuration
-#
+unset STARTING_SHELL
+unset config_file
+unset source_file
 
 INFO "Done."

@@ -1,29 +1,9 @@
+#! /usr/bin/env zsh
 #
 # TODO
 #
 # Authors:
 #   Alexis BRENON
-#
-
-#
-# 16 Terminal Colors
-# -- ---------------
-#  0 black
-#  1 red
-#  2 green
-#  3 yellow
-#  4 blue
-#  5 magenta
-#  6 cyan
-#  7 white
-#  8 bright black
-#  9 bright red
-# 10 bright green
-# 11 bright yellow
-# 12 bright blue
-# 13 bright magenta
-# 14 bright cyan
-# 15 bright white
 #
 
 function prompt_alexis_separating_line {

@@ -1,7 +1,5 @@
 #! /bin/sh
 
-INFO "Defining GIT aliases"
-
 alias g='git'
 
 alias ga='git add'
