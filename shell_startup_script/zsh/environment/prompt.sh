@@ -1,6 +1,6 @@
 #! /usr/bin/env zsh
 
-fpath=(/home/alexis/.config/shell/zsh/prompt $fpath)
+fpath=("${HOME}/.config/shell/zsh/prompt" $fpath)
 autoload -Uz promptinit
 promptinit
 prompt alexis
