@@ -1,5 +1,7 @@
 #! /bin/sh
 
+# Use less as the default pager
+export PAGER=less
 # Display more info in the less prompt
 export LESS="$LESS -RM"
 # Apply same kind of prompt to man
