@@ -1,0 +1,11 @@
+#! /bin/sh
+
+set blink-matching-paren on
+set colored-stats on
+set completion-ignore-case on
+set skip-complete-text on
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+Control-w: unix-filename-rubout
+Control-k: redraw-current-line
