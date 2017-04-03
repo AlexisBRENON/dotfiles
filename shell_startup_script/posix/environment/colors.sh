@@ -57,6 +57,8 @@ export BPurple="${ColorFontCode}13m"      # Purple
 export BCyan="${ColorFontCode}14m"        # Cyan
 export BWhite="${ColorFontCode}15m"       # White
 
+export Default="${ColorFontCode}m"
+
 # Background
 export On_Black="${ColorBackCode}0m"       # Black
 export On_Red="${ColorBackCode}1m"         # Red
@@ -66,5 +68,7 @@ export On_Blue="${ColorBackCode}4m"        # Blue
 export On_Purple="${ColorBackCode}5m"      # Purple
 export On_Cyan="${ColorBackCode}6m"        # Cyan
 export On_White="${ColorBackCode}7m"       # White
+
+export On_Default="${ColorBackCode}m"
 
 export ColorReset="\e[m"       # Color Reset

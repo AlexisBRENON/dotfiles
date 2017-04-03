@@ -13,6 +13,6 @@ source_file "${ALIAS_CONFIG_PATH}/misc.sh"
 # TODO: merge these aliases
 source_file "${ALIAS_CONFIG_PATH}/apt-get.sh"
 source_file "${ALIAS_CONFIG_PATH}/pacman.sh"
-source_file "${ALIAS_CONFIG_PATH}/yahourt.sh"
+source_file "${ALIAS_CONFIG_PATH}/yaourt.sh"
 
 unset ALIAS_CONFIG_PATH

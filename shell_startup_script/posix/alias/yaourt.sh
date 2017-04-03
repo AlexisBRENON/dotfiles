@@ -1,6 +1,6 @@
 #! /bin/sh
 
-if command -v yahourt > /dev/null ; then
+if command -v yaourt > /dev/null ; then
   alias yaconf='yaourt -C'
   alias yaupg='yaourt -Syua'
   alias yasu='yaourt -Syua --noconfirm'
