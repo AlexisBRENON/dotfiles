@@ -90,3 +90,5 @@ alias gtv='git tag | sort -V'
 
 alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
 alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify -m "--wip-- [skip ci]"'
+alias gbackup='gwip && git push origin HEAD:backup-$(date -I) && gunwip'
+
