@@ -27,6 +27,15 @@ source_file() {
   fi
 }
 
+source_submodules() {
+  for FILE in "${1}/"*; do
+    if [ -f "${FILE}" ] && [ "$(basename $FILE)" != "init.sh" ]; then
+      source_file "${FILE}"
+    fi
+  done
+}
+
+
 # Load generic configuration
 source_file "${HOME}/.config/shell/posix/init.sh"
 
@@ -44,6 +53,7 @@ source_file "$config_file" || INFO "No configuration file for shell '${SHELL}'"
 
 unset STARTING_SHELL
 unset config_file
+unset source_submodules
 unset source_file
 
 INFO "Done."

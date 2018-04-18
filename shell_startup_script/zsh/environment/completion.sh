@@ -1,5 +1,9 @@
 #! /usr/bin/env zsh
 
+ENV_CONFIG_PATH="$(dirname "$RC_SOURCED_FILE")"
+
+INFO "Loading completion for Zsh."
+
 # The following lines were added by compinstall
 
 zstyle ':completion:*' completer _expand _complete _ignored
@@ -19,7 +23,7 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
 
-zstyle :compinstall filename '/home/alexis/.config/shell/zsh/environment/completion.sh'
+zstyle :compinstall filename "${HOME}/.config/shell/zsh/environment/completion.sh"
 
 autoload -Uz compinit
 compinit

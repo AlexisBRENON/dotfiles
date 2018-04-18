@@ -4,4 +4,6 @@ ALIAS_CONFIG_PATH="$(dirname "$RC_SOURCED_FILE")"
 
 INFO "Loading aliases for bash shells"
 
-source_file "${ALIAS_CONFIG_PATH}/git.sh"
+source_submodules "${ENV_CONFIG_PATH}"
+
+unset ALIAS_CONFIG_PATH
