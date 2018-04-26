@@ -1,0 +1,97 @@
+#! /usr/bin/env make -r -f
+
+MASTER := $(wildcard 000-*.tex)
+JOBNAME := $(MASTER:000-%.tex=%)
+OUTPUT := $(JOBNAME).pdf
+
+SVG_ASSETS := $(shell find . -name "*.svg" -a ! -name ".*")
+SVG_PDF := $(SVG_ASSETS:svg=pdf_tex)
+
+INKSCAPE := inkscape
+INKSCAPEFLAGS := --without-gui --export-area-page --export-latex --export-background=white --export-pdf-version=1.4
+
+PLOT_ASSETS := $(shell find assets/gnuplot -name "*.gpi" -a ! -name ".*")
+PLOT_GENERIC_ASSETS := $(shell find assets/gnuplot -name "*.plt" -a ! -name ".*")
+PLOT_TEX := $(PLOT_ASSETS:gpi=tex)
+PLOT_PDF := $(PLOT_TEX:tex=pdf)
+
+GNUPLOT := gnuplot
+GNUPLOTFLAGS := 
+
+LATEXMK := latexmk
+LATEXMKCFG := ./assets/latexmkrc
+LATEXMKFLAGS := -r $(LATEXMKCFG) -shell-escape -jobname="$(JOBNAME)"
+
+MAKEIDX := makeindex
+MAKEIDXCFG := ./assets/index_cfg.ist
+MAKEIDXFLAGS := -s $(MAKEIDXCFG)
+
+MAKEGLO := makeindex
+
+LATEXDIFF := git latexdiff
+LATEXDIFFFLAGS := --whole-tree --math-markup=off -o "$(JOBNAME)_diff.pdf" --main $(MASTER) --latexmk $(shell git describe --abbrev=0) --
+
+.PHONY: all
+all: pdf
+
+.PHONY: pdf
+pdf: $(OUTPUT)
+
+.PHONY: check
+check: $(OUTPUT)
+	curl --form 'file=@$(OUTPUT)' https://facile.cines.fr/xml | xmllint --format - | grep --color=always -e "<valid>" -e "<wellFormed>" -e "<archivable>"
+
+.PHONY: svg
+svg: $(SVG_PDF)
+
+.PHONY: diff
+diff:
+	$(LATEXDIFF) $(LATEXDIFFFLAGS)
+
+.PHONY: $(OUTPUT) # Prerequisite check is handled by latexmk
+$(OUTPUT): $(MASTER) $(SVG_PDF) $(PLOT_PDF)
+	$(LATEXMK) $(LATEXMKFLAGS) $<
+
+%.pdf_tex: %.svg
+	$(INKSCAPE) $(INKSCAPEFLAGS) --file="$<" --export-pdf="$(@:_tex=)" 2> /dev/null
+  
+.PHONY: plot clean_plot
+plot:
+	@$(MAKE) $(PLOT_PDF)
+
+clean_plot:
+	rm -f $(PLOT_PDF) $(PLOT_TEX)
+
+.SECONDEXPANSION:
+$(PLOT_TEX): %.tex: %.gpi $$(dir %)metrics.dat $(PLOT_GENERIC_ASSETS)
+	$(GNUPLOT) $(GNUPLOTFLAGS) $< 2> /dev/null
+
+$(PLOT_PDF): %.pdf: %.tex
+	mv $@ $@.bak
+	gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=$@ $@.bak
+	rm -f $@.bak
+
+%.gls: %.glo assets/%.mst
+	$(MAKEGLO) -s ./assets/$*.mst -o $@ $<
+
+%.ind: %.idx $(MAKEIDXCFG)
+	$(MAKEIDX) $(MAKEIDXFLAGS) -o $@ $<
+
+.PHONY: clean
+clean:
+	rm -f *.fdb_latexmk
+	rm -f *.aux *.log
+	rm -f *.bcf *.fls
+	rm -f *.toc *.lof *.lot *.loa *.out
+	rm -f *.bbl *.blg
+	rm -f *.gls *.glo
+	rm -f *.ind *.idx *.ilg
+	rm -f *.nav *.vrb *.snm
+	rm -f *.run.xml *.synctex.gz
+	rm -f *.xmpdata *.xmpi
+
+.PHONY: dist-clean
+dist-clean: clean
+	rm -f $(SVG_PDF) $(SVG_PDF:pdf_tex=pdf)
+	rm -f $(PLOT_TEX) $(PLOT_PDF)
+	rm -f $(OUTPUT)
