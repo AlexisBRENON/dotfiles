@@ -22,7 +22,7 @@ Plugin 'Indent-Finder' " Automatic indentation detection
 Plugin 'vim-airline/vim-airline' " Improved status line
 Plugin 'vim-pandoc/vim-pandoc' " Pandoc support
 Plugin 'vim-pandoc/vim-pandoc-syntax' " Pandoc/Markdown syntax highlight
-Plugin 'kyuhi/vim-emoji-complete' " Find and insert emojis
+Plugin 'denilsonsa/vim-emoji-complete' " Find and insert emojis
 Plugin 'LanguageTool' " LanguageTool integration
 
 " All of your Plugins must be added before the following line
