@@ -11,9 +11,6 @@ source_file "${ALIAS_CONFIG_PATH}/git.sh"
 source_file "${ALIAS_CONFIG_PATH}/misc.sh"
 source_file "${ALIAS_CONFIG_PATH}/keecker.sh"
 
-# TODO: merge these aliases
-source_file "${ALIAS_CONFIG_PATH}/apt-get.sh"
-source_file "${ALIAS_CONFIG_PATH}/pacman.sh"
-source_file "${ALIAS_CONFIG_PATH}/yaourt.sh"
+source_file "${ALIAS_CONFIG_PATH}/package-manager.sh"
 
 unset ALIAS_CONFIG_PATH
