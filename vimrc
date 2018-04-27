@@ -127,6 +127,8 @@ let g:VeryMagicSubstitute = 1 " Magic regex for substitution
 let g:syntastic_sh_checkers = ["shellcheck", "bashate", "sh"]
 let g:syntastic_sh_shellcheck_args = "-e 1090"
 
+let g:syntastic_cpp_compiler_options = "-std=c++11"
+
 " NERDTree
 
 " Press F2 to toggle the NERDTree pane
