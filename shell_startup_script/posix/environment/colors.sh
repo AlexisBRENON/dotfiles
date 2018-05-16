@@ -36,39 +36,40 @@ colors_example() {
 
 export ColorFontCode='\e[38;5;'
 export ColorBackCode='\e[48;5;'
+export ColorEndCode='m'
 
 # Normal Colors
-export Black="${ColorFontCode}0m"        # Black
-export Red="${ColorFontCode}1m"          # Red
-export Green="${ColorFontCode}2m"        # Green
-export Yellow="${ColorFontCode}3m"       # Yellow
-export Blue="${ColorFontCode}4m"         # Blue
-export Purple="${ColorFontCode}5m"       # Purple
-export Cyan="${ColorFontCode}6m"         # Cyan
-export White="${ColorFontCode}7m"        # White
+export Black="${ColorFontCode}0${ColorEndCode}"        # Black
+export Red="${ColorFontCode}1${ColorEndCode}"          # Red
+export Green="${ColorFontCode}2${ColorEndCode}"        # Green
+export Yellow="${ColorFontCode}3${ColorEndCode}"       # Yellow
+export Blue="${ColorFontCode}4${ColorEndCode}"         # Blue
+export Purple="${ColorFontCode}5${ColorEndCode}"       # Purple
+export Cyan="${ColorFontCode}6${ColorEndCode}"         # Cyan
+export White="${ColorFontCode}7${ColorEndCode}"        # White
 
 # Bold/Bright
-export BBlack="${ColorFontCode}8m"       # Grey
-export BRed="${ColorFontCode}9m"         # Red
-export BGreen="${ColorFontCode}10m"       # Green
-export BYellow="${ColorFontCode}11m"      # Yellow
-export BBlue="${ColorFontCode}12m"        # Blue
-export BPurple="${ColorFontCode}13m"      # Purple
-export BCyan="${ColorFontCode}14m"        # Cyan
-export BWhite="${ColorFontCode}15m"       # White
+export BBlack="${ColorFontCode}8${ColorEndCode}"       # Grey
+export BRed="${ColorFontCode}9${ColorEndCode}"         # Red
+export BGreen="${ColorFontCode}10${ColorEndCode}"       # Green
+export BYellow="${ColorFontCode}11${ColorEndCode}"      # Yellow
+export BBlue="${ColorFontCode}12${ColorEndCode}"        # Blue
+export BPurple="${ColorFontCode}13${ColorEndCode}"      # Purple
+export BCyan="${ColorFontCode}14${ColorEndCode}"        # Cyan
+export BWhite="${ColorFontCode}15${ColorEndCode}"       # White
 
-export Default="${ColorFontCode}m"
+export Default="${ColorFontCode}${ColorEndCode}"
 
 # Background
-export On_Black="${ColorBackCode}0m"       # Black
-export On_Red="${ColorBackCode}1m"         # Red
-export On_Green="${ColorBackCode}2m"       # Green
-export On_Yellow="${ColorBackCode}3m"      # Yellow
-export On_Blue="${ColorBackCode}4m"        # Blue
-export On_Purple="${ColorBackCode}5m"      # Purple
-export On_Cyan="${ColorBackCode}6m"        # Cyan
-export On_White="${ColorBackCode}7m"       # White
+export On_Black="${ColorBackCode}0${ColorEndCode}"       # Black
+export On_Red="${ColorBackCode}1${ColorEndCode}"         # Red
+export On_Green="${ColorBackCode}2${ColorEndCode}"       # Green
+export On_Yellow="${ColorBackCode}3${ColorEndCode}"      # Yellow
+export On_Blue="${ColorBackCode}4${ColorEndCode}"        # Blue
+export On_Purple="${ColorBackCode}5${ColorEndCode}"      # Purple
+export On_Cyan="${ColorBackCode}6${ColorEndCode}"        # Cyan
+export On_White="${ColorBackCode}7${ColorEndCode}"       # White
 
-export On_Default="${ColorBackCode}m"
+export On_Default="${ColorBackCode}${ColorEndCode}"
 
-export ColorReset="\e[m"       # Color Reset
+export ColorReset="\e[${ColorEndCode}"       # Color Reset

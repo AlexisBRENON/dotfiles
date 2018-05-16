@@ -2,7 +2,7 @@
 
 ENV_CONFIG_PATH="$(dirname "$RC_SOURCED_FILE")"
 
-INFO "Loading environment variables for Zsh."
+INFO "Loading environment variables for Bash."
 
 source_submodules "${ENV_CONFIG_PATH}"
 

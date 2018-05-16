@@ -93,11 +93,11 @@ _tar()
   fi
 
   case "${COMP_WORDS[1]}" in
-    (?(-)c*f)
+    "(?(-)c"*f)
       COMPREPLY=( $( compgen -f "$cur" ) )
       return 0
       ;;
-    +([^Izjy])f)
+    "+([^Izjy])f")
       ext='tar'
       regex=$ext
       ;;

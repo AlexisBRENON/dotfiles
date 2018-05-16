@@ -4,6 +4,6 @@ ALIAS_CONFIG_PATH="$(dirname "$RC_SOURCED_FILE")"
 
 INFO "Loading aliases for bash shells"
 
-source_submodules "${ENV_CONFIG_PATH}"
+source_submodules "${ALIAS_CONFIG_PATH}"
 
 unset ALIAS_CONFIG_PATH

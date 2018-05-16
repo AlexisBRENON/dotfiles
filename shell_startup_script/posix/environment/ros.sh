@@ -6,7 +6,7 @@ if [[ -d /opt/ros ]]; then
   export ROS_ROOT="/opt/ros/$ROS_DISTRO"
   export ROS_HOME="$HOME/.cache/ros/$ROS_DISTRO"
 
-  . $ROS_ROOT/setup.zsh
+  . "$ROS_ROOT/setup.sh"
 
   export ROS_MASTER_URI="http://$(hostname -I | cut -d" " -f1):11311"
 fi

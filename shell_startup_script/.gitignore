@@ -1,3 +1,4 @@
 *~
+_*.sh
 plugin/
 !plugin/init.sh
