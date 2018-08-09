@@ -9,7 +9,8 @@ source_file "${ALIAS_CONFIG_PATH}/archive.sh"
 source_file "${ALIAS_CONFIG_PATH}/rsync.sh"
 source_file "${ALIAS_CONFIG_PATH}/git.sh"
 source_file "${ALIAS_CONFIG_PATH}/misc.sh"
-source_file "${ALIAS_CONFIG_PATH}/keecker.sh"
+source_file "${ALIAS_CONFIG_PATH}/python.sh"
+source_file "${ALIAS_CONFIG_PATH}/_keecker.sh"
 
 source_file "${ALIAS_CONFIG_PATH}/package-manager.sh"
 
