@@ -2,8 +2,10 @@
 
 if [[ -d /opt/android-sdk ]]; then
   
-  export ANDROID_SDK=/opt/android-sdk
-  export ANDROID_NDK=/opt/android-ndk
-  
-  export PATH="$ANDROID_SDK/platform-tools:$PATH"
+    export ANDROID_SDK_ROOT="/opt/android-sdk/"
+    export ANDROID_HOME="${ANDROID_SDK_ROOT}"
+    export ANDROID_NDK_ROOT="/opt/android-ndk/"
+    export ANDROID_NDK="$ANDROID_NDK_ROOT"
+
+    export PATH="$ANDROID_SDK_ROOT/platform-tools:$PATH"
 fi
