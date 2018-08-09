@@ -30,6 +30,16 @@ yaourt_aliases() {
   alias pkg-remove="yaourt -Rns"
   alias pkg-clean='yaourt -Rs $(yaourt -Qtdq)'
 }
+aurman_aliases() {
+  alias pkg-search="aurman -Ss"
+  alias pkg-install="aurman -S"
+  alias pkg-local-install="sudo pacman -U"
+  alias pkg-update="aurman -Sy"
+  alias pkg-upgrade="aurman -Syua"
+  alias pkg-list="aurman -Q"
+  alias pkg-remove="aurman -Rns"
+  alias pkg-clean='aurman -Rs $(aurman -Qtdq)'
+}
 pacman_aliases() {
   alias pkg-search="pacman -Ss"
   alias pkg-install="sudo pacman -S"
@@ -41,7 +51,7 @@ pacman_aliases() {
   alias pkg-clean='sudo pacman -Rs $(pacman -Qtdq)'
 }
 
-system_pkg_mgrs="aptitude:apt-get:yaourt:pacman"
+system_pkg_mgrs="aptitude:apt-get:aurman:yaourt:pacman"
 for pkg_mgr in $(echo "${system_pkg_mgrs}" | tr ':' '\n'); do
   if command -v "${pkg_mgr}" > /dev/null; then
     INFO "Loading aliases for '${pkg_mgr}'"
