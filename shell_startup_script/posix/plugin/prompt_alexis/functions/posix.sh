@@ -175,9 +175,9 @@ f_prompt_alexis_build_git_line() {
         "$(lf_prompt_alexis_get_symbol_for tag) ${gbg_head_tag:-}"\
       )"
 
-    l_prompt_alexis_git_line="${l_prompt_alexis_git_line} ${Red}${On_Default:-}$(\
+    l_prompt_alexis_git_line="${l_prompt_alexis_git_line} ${ColorReset:-}${Red}$(\
       lf_prompt_alexis_get_symbol_for separator\
-    )${ColorReset:-}"
+    )${ColorReset}"
 
     echo "${l_prompt_alexis_git_line}"
     unset l_prompt_alexis_git_line

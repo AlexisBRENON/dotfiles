@@ -28,7 +28,7 @@ f_prompt_alexis_posix_setup() {
       v_prompt_alexis_git_symbols=""
     fi
   fi
-  DEBUG "git_symbols: ${v_prompt_alexis_git_symbols}"
+  DEBUG "git_symbols: '${v_prompt_alexis_git_symbols}'"
   v_prompt_alexis_git_symbols_map="
     is_a_git_repo:1
     separator:2
