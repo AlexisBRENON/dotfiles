@@ -69,7 +69,7 @@ set encoding=utf-8
 set ffs=unix
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Tab, Indent and Wrap related
+" Space, Tab, Indent and Wrap related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Indentation
@@ -87,6 +87,9 @@ map <special><S-Up> gk
 map <special><S-Down> gj
 imap <special><S-Up> <ESC>gka
 imap <special><S-Down> <ESC>gja
+
+set listchars=tab:▸·,trail:·,nbsp:␣
+set list
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Search related
