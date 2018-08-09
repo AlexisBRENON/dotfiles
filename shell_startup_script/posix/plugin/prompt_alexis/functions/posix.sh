@@ -42,6 +42,9 @@ f_prompt_alexis_py_line() {
     l_virtual_env_prompt="$(\
       grep -A1 -F '_OLD_VIRTUAL_PS1="$PS1"' "${VIRTUAL_ENV}/bin/activate" | tail -n1 | \
       sed -E 's/^ *if \[ "x([^"]*)" !=.*$/\1/')"
+    if [ -z "${l_virtual_env_prompt}" ]; then
+      l_virtual_env_prompt="$(basename "$(readlink -m "${VIRTUAL_ENV}/..")")"
+    fi
     l_virtual_env_py_version="$(python --version 2>&1 | cut -d' ' -f2)"
     v_prompt_alexis_py_line="${v_prompt_alexis_py_line}${ColorReset:-}${Black:-}${On_Green:-}"
     v_prompt_alexis_py_line="${v_prompt_alexis_py_line}${l_virtual_env_prompt}"
