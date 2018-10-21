@@ -75,6 +75,8 @@ set tabstop=2 shiftwidth=2 " 1 tab = 2 spaces
 set ai " Auto indent
 set si " Smart indent
 
+autocmd Filetype sh setlocal ts=4 sts=4 sw=4
+
 " Line break on 100 characters
 set wrap " Wrap lines
 set lbr " Wrap on word boundaries
@@ -128,7 +130,7 @@ let g:VeryMagicSubstitute = 1 " Magic regex for substitution
 
 " Syntastic
 let g:syntastic_sh_checkers = ["shellcheck", "bashate", "sh"]
-let g:syntastic_sh_shellcheck_args = "-e 1090"
+let g:syntastic_sh_shellcheck_args = "-x"
 
 let g:syntastic_cpp_compiler_options = "-std=c++11"
 
