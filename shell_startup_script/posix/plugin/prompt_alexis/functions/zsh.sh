@@ -28,7 +28,7 @@ if [ "${v_prompt_alexis_no_async:-false}" = "false" ]; then
 
   f_prompt_alexis_zsh_async_git_line() {
     # Get Git repository information.
-    if [ "$(set | grep -c "god_bless_git")" -eq 1 ]; then
+    if [ "$(set | grep -c "^god_bless_git=")" -eq 1 ]; then
       god_bless_git
       export -p | grep -Ee "gbg_" | rev | cut -d' ' -f1 | rev >! "${v_prompt_alexis_async_git_data}"
     fi
@@ -36,7 +36,7 @@ if [ "${v_prompt_alexis_no_async:-false}" = "false" ]; then
     # Signal completion to parent process.
     kill -SIGUSR1 $$
   }
-  
+
   f_prompt_alexis_async_timeout () {
     sleep 5
     l_prompt_alexis_async_git_pid="$(cat "${XDG_CACHE_DIR:-${HOME}/.cache}/prompt_alexis/git_pid")" 2> /dev/null

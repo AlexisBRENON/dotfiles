@@ -1,7 +1,7 @@
 #! /bin/sh
 
 f_prompt_alexis_separating_line() {
-  export v_prompt_alexis_separating_line="\n"
+  export v_prompt_alexis_separating_line="\\n"
 }
 
 f_prompt_alexis_host_info() {
@@ -10,7 +10,7 @@ f_prompt_alexis_host_info() {
 }
 
 f_prompt_alexis_pwd() {
-  v_prompt_alexis_pwd="${Green:-}$(echo "${PWD}" | sed "s#^${HOME}#~#")${ColorReset:-}\n"
+  v_prompt_alexis_pwd="${Green:-}$(echo "${PWD}" | sed "s#^${HOME}#~#")${ColorReset:-}\\n"
   export v_prompt_alexis_pwd
 }
 
@@ -63,12 +63,12 @@ f_prompt_alexis_py_line() {
 
 f_prompt_alexis_git_line() {
   v_prompt_alexis_git_line=""
-  if [ "$(set | grep -c "gbg_git_info")" -ge 1 ]; then
-    gbg_git_info
+  if [ "$(set | grep -c "god_bless_git")" -ge 1 ]; then
+    god_bless_git
     v_prompt_alexis_git_line="$(f_prompt_alexis_build_git_line)"
     if [ -n "${v_prompt_alexis_git_line}" ]
     then
-      v_prompt_alexis_git_line="${v_prompt_alexis_git_line}\n"
+      v_prompt_alexis_git_line="${v_prompt_alexis_git_line}\\n"
     fi
   fi
   export v_prompt_alexis_git_line
