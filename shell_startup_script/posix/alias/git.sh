@@ -60,7 +60,7 @@ alias gm='git merge'
 
 alias gp='git push'
 alias gpall='git push origin --all && git push origin --tags'
-alias gpu='git push upstream'
+alias gpu='git push -u origin $(git rev-parse --abbrev-ref HEAD)'
 alias gpv='git push -v'
 
 alias grb='git rebase'
@@ -84,6 +84,9 @@ alias gstd='git stash drop'
 alias gstl='git stash list'
 alias gstp='git stash pop'
 alias gsts='git stash show --text'
+
+alias gsmi='git submodule sync --recursive && git submodule update --init --recursive'
+alias gsmu='git submodule update'
 
 alias gts='git tag -s'
 alias gtv='git tag | sort -V'
