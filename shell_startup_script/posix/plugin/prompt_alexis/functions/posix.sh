@@ -26,7 +26,7 @@ f_prompt_alexis_last_command_status() {
   else
     v_prompt_alexis_last_command_status="${l_prompt_alexis_brown}💩"
   fi
-  v_prompt_alexis_last_command_status="${v_prompt_alexis_last_command_status} ${ColorReset:-} "
+  v_prompt_alexis_last_command_status="${v_prompt_alexis_last_command_status} ${ColorReset:-} ‌"
   export v_prompt_alexis_last_command_status
 }
 
@@ -56,7 +56,7 @@ f_prompt_alexis_py_line() {
     v_prompt_alexis_py_line="${v_prompt_alexis_py_line}$(\
       lf_prompt_alexis_get_py_symbol_for separator
     )"
-    v_prompt_alexis_py_line="${v_prompt_alexis_py_line}${ColorReset}\n"
+    v_prompt_alexis_py_line="${v_prompt_alexis_py_line}${ColorReset}\n‌"
   fi
   export v_prompt_alexis_py_line
 }
@@ -93,7 +93,7 @@ f_prompt_alexis_build_git_line() {
   then
     # git repo infos
     l_prompt_alexis_git_line="${Black:-}${On_White:-}"
-    l_prompt_alexis_git_line="${l_prompt_alexis_git_line}${gbg_repo_name} "
+    l_prompt_alexis_git_line="${l_prompt_alexis_git_line}${gbg_repo_name:-} "
     l_prompt_alexis_git_line="${l_prompt_alexis_git_line}$(\
       lf_prompt_alexis_get_symbol_for is_a_git_repo\
     )"

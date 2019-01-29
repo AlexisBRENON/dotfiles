@@ -90,6 +90,6 @@ f_prompt_alexis_last_command_status() {
   fi
   sparkles='\u2728'
   poo='💩'
-  export v_prompt_alexis_last_command_status="%{%(?.${_yellow}${sparkles}.${_brown}${poo})%G%} %{%f%} "
+  export v_prompt_alexis_last_command_status="%{%(?.${_yellow}${sparkles}.${_brown}${poo})%2G%} %{%f%} "
 }
 
