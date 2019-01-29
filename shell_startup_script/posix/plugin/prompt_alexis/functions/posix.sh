@@ -93,9 +93,7 @@ f_prompt_alexis_build_git_line() {
   then
     # git repo infos
     l_prompt_alexis_git_line="${Black:-}${On_White:-}"
-    l_prompt_alexis_git_line="${l_prompt_alexis_git_line}$(\
-      basename "${gbg_repo_top_level}"\
-    )"
+    l_prompt_alexis_git_line="${l_prompt_alexis_git_line}${gbg_repo_name} "
     l_prompt_alexis_git_line="${l_prompt_alexis_git_line}$(\
       lf_prompt_alexis_get_symbol_for is_a_git_repo\
     )"
