@@ -67,49 +67,46 @@ __gradle-generate-script-cache() {
 __gradle-generate-tasks-cache() {
     __gradle-set-files-checksum
 
+    local gradle_cmd="gradlew"
     # Use Gradle wrapper when it exists.
-    local gradle_cmd="gradle"
-    if [[ -x "$project_root_dir/gradlew" ]]; then
-        gradle_cmd="$project_root_dir/gradlew"
-    fi
+    #if [[ -x "$project_root_dir/gradlew" ]]; then
+    #    gradle_cmd="$project_root_dir/gradlew"
+    #fi
 
     zle -R "Generating Gradle task cache from $gradle_build_file"
 
     # Run gradle to retrieve possible tasks and cache.
     # Reuse Gradle Daemon if IDLE but don't start a new one.
-    local gradle_tasks_output
+    local gradle_tasks_daemon_option="--no-daemon"
     if [[ ! -z "$($gradle_cmd --status 2>/dev/null | grep IDLE)" ]]; then
-        gradle_tasks_output="$($gradle_cmd --daemon --build-file $gradle_build_file -q tasks --all)"
-    else
-        gradle_tasks_output="$($gradle_cmd --no-daemon --build-file $gradle_build_file -q tasks --all)"
-    fi
-    local gradle_all_tasks="" root_tasks="" subproject_tasks="" output_line
-    local -a match
-    for output_line in ${(f)"$(printf "%s\n" "${gradle_tasks_output[@]}")"}; do
-        if [[ $output_line =~ ^([[:lower:]][[:alnum:][:punct:]]*)([[:space:]]-[[:space:]]([[:print:]]*))? ]]; then
-            local task_name="${match[1]}"
-            local task_description="${match[3]}"
-            # Completion for subproject tasks with ':' prefix
-            if [[ $task_name =~ ^([[:alnum:][:punct:]]+):([[:alnum:]]+) ]]; then
-                gradle_all_tasks+="${task_name//:/\\:}:$task_description\n\\:${task_name//:/\\:}:$task_description\n"
-                subproject_tasks+="${match[2]}\n"
-            else
-                gradle_all_tasks+="${task_name//:/\\:}:$task_description\n"
-                root_tasks+="$task_name\n"
-            fi
-        fi
-    done
-
-    # subproject tasks can be referenced implicitly from root project
-    if [[ $GRADLE_COMPLETION_UNQUALIFIED_TASKS == "true" ]]; then
-        local -a implicit_tasks
-        implicit_tasks=( $(comm -23 <(echo $subproject_tasks | sort) <(echo $root_tasks | sort)) )
-        for task in $(printf "%s\n" "${implicit_tasks[@]}"); do
-            gradle_all_tasks+="$task\n"
-        done
+      gradle_tasks_daemon_option="--daemon"
     fi
 
-    echo $gradle_all_tasks > $cache_dir/$gradle_files_checksum
+    "$gradle_cmd" \
+      "$gradle_tasks_daemon_option" \
+      --console plain \
+      --build-file "$gradle_build_file" \
+      --quiet \
+      tasks --all \
+      | \
+      awk '
+    / - / {
+      desc_sep_index = index($0, " - ");
+      task = substr($0, 1, desc_sep_index-1);
+      desc = substr($0, desc_sep_index+3, length($0));
+
+      output_line = "";
+      line = task;
+      offset = 0;
+      while (index(line, ":") > 0) {
+        i = index(line, ":");
+        offset = i
+        output_line = output_line substr(line, 1, offset-1) "\\:";
+        line = substr(line, offset+1, length(line));
+      }
+      output_line = output_line line ":" desc;
+      print output_line;
+    }' > "$cache_dir/$gradle_files_checksum"
     echo $gradle_files_checksum > $cache_dir/$cache_name.md5
 }
 
@@ -141,13 +138,35 @@ __gradle_tasks() {
         # The cache key is md5 sum of all gradle scripts, so it's valid if it exists.
         if [[ -f $cache_dir/$cache_name.md5 ]]; then
             local cached_checksum="$(cat $cache_dir/$cache_name.md5)"
-            local -a cached_tasks
-            if [[ -z $cur ]]; then
-                cached_tasks=(${(f)"$(cat $cache_dir/$cached_checksum)"})
-            else
-                cached_tasks=(${(f)"$(grep "^${cur//:/\\\\:}" $cache_dir/$cached_checksum)"})
-            fi
-            _describe 'all tasks' cached_tasks && ret=0
+            local -a subprojects tasks
+
+            local cur_depth=$(echo "${cur}" | tr -d -c ':' | wc -c)
+            cur_depth=$(( cur_depth + 1 ))
+            subprojects=(${(f)"$(\
+              awk '
+                /^'"${cur//:/\\\\:}"'/ {
+                  output = ""
+                  depth = 0;
+                  line = $0;
+                  while (index(line, "\\:") > 0) {
+                    i = index(line, "\\:");
+                    output = output substr(line, 0, i-1);
+                    line = substr(line, i+1, length(line));
+                    depth++;
+                    if (depth == '"$cur_depth"') {
+                      print output
+                      next;
+                    }
+                }
+            }' $cache_dir/$cached_checksum | \
+              sort -u)"})
+            disp=(${^subprojects}':')
+            compadd -U -J "Sub-projects" -q -S : -d disp -a subprojects && ret=0
+
+            tasks=(${(f)"$(\
+              grep -Ee "^${cur//:/\\\\:}:*([^\\]*\\:)?[^\\]*:" -e "^[^\\]*:" $cache_dir/$cached_checksum | \
+              sort -u)"})
+            _describe 'Tasks' tasks && ret=0
         else
             __gradle-generate-tasks-cache
         fi
