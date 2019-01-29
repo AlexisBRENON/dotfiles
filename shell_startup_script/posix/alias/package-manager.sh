@@ -34,8 +34,8 @@ aurman_aliases() {
   alias pkg-search="aurman -Ss"
   alias pkg-install="aurman -S"
   alias pkg-local-install="sudo pacman -U"
-  alias pkg-update="aurman -Sy"
-  alias pkg-upgrade="aurman -Syua"
+  alias pkg-update="aurman -Syu"
+  alias pkg-upgrade="aurman -Syu"
   alias pkg-list="aurman -Q"
   alias pkg-remove="aurman -Rns"
   alias pkg-clean='aurman -Rs $(aurman -Qtdq)'
