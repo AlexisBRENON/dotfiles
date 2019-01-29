@@ -9,21 +9,18 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim' " Vim bundle manager
+Plugin 'sickill/vim-monokai' " Color scheme
 Plugin 'scrooloose/nerdtree' " Vim filesystem explorer
 Plugin 'scrooloose/syntastic' " Vim syntax checker
 Plugin 'tpope/vim-fugitive' " Git integration
 Plugin 'tpope/vim-surround' " Easy surrounding
-Plugin 'sickill/vim-monokai' " Color scheme
 Plugin 'coot/CRDispatcher' " Requirement for EnchantedVim
 Plugin 'coot/EnchantedVim' " Persistent very magic regex
 Plugin 'Valloric/YouCompleteMe' " Autocomplete plugin
-Plugin 'kchmck/vim-coffee-script' " CoffeScript support
 Plugin 'Indent-Finder' " Automatic indentation detection
 Plugin 'vim-airline/vim-airline' " Improved status line
-Plugin 'vim-pandoc/vim-pandoc' " Pandoc support
-Plugin 'vim-pandoc/vim-pandoc-syntax' " Pandoc/Markdown syntax highlight
 Plugin 'denilsonsa/vim-emoji-complete' " Find and insert emojis
-Plugin 'LanguageTool' " LanguageTool integration
+Plugin 'udalov/kotlin-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -118,6 +115,9 @@ command! Sv source $MYVIMRC
 " Plugin configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" ALE
+let g:ale_command_wrapper = "env -i HOME=\"${HOME}\" TERM=\"${TERM}\" PATH=\"${PATH}\" ANDROID_NDK=\"${ANDROID_NDK}\" ANDROID_HOME=\"${ANDROID_HOME}\" GCC_ARM_TOOLCHAIN=\"${GCC_ARM_TOOLCHAIN}\""
+
 " EnchantedVim
 
 let g:VeryMagic = 0 " Disable EnchantedVim for incsearch
@@ -144,3 +144,10 @@ let g:pandoc#modules#disabled = ["chdir"]
 let g:languagetool_jar = '/usr/bin/languagetool'
 let g:languagetool_disable_rules = 'WHITESPACE_RULE,FRENCH_WHITESPACE,COMMA_PARENTHESIS_WHITESPACE'
 map <silent><F12> :LanguageToolCheck<CR>
+
+" Load all plugins now.
+" Plugins need to be added to runtimepath before helptags can be generated.
+packloadall
+" Load all of the helptags now, after plugins have been loaded.
+" All messages and errors will be ignored.
+silent! helptags ALL
