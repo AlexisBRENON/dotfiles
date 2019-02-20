@@ -54,13 +54,13 @@ if [ "${v_prompt_alexis_no_async:-false}" = "false" ]; then
       . "${v_prompt_alexis_async_git_data}" # Load gbg variables
       l_prompt_alexis_new_git_line="$(f_prompt_alexis_build_git_line)" # Generate the pretty line
       if [ -n "${l_prompt_alexis_new_git_line}" ]
-      then 
-        l_prompt_alexis_new_git_line="${l_prompt_alexis_new_git_line}\n"
+      then
+        l_prompt_alexis_new_git_line="${l_prompt_alexis_new_git_line}\n‌"
       fi
       # If line has changed
       if [ "${l_prompt_alexis_new_git_line}" != "${v_prompt_alexis_git_line}" ]; then
-        export v_prompt_alexis_git_line="${l_prompt_alexis_new_git_line}"
-        zle && zle reset-prompt && print '' # Refresh the prompt
+        export v_prompt_alexis_git_line="%{${l_prompt_alexis_new_git_line}%}"
+        zle && zle reset-prompt # Refresh the prompt
       fi
       unset l_prompt_alexis_new_git_line
 
