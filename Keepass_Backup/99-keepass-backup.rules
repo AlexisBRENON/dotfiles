@@ -1,3 +1,4 @@
 
-ATTRS{idVendor}=="090c", ATTRS{idProduct}=="1000", RUN+="/bin/echo connected >> /tmp/keepass_backup/pipe"
+#KERNEL=="sd?" ATTRS{idVendor}=="090c", ATTRS{idProduct}=="1000", RUN+="/bin/sh -c 'echo == >> /home/alexis/udev-env.txt; env >> /home/alexis/udev-env.txt'"
+KERNEL=="sd?" ATTRS{idVendor}=="090c", ATTRS{idProduct}=="1000", RUN+="/bin/sh -c 'echo connected >> /tmp/keepass_backup/pipe'"
 
