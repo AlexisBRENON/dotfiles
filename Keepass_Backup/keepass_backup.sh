@@ -72,7 +72,6 @@ do
             else
                 log "Device was never mounted..."
             fi
-            synchronize
         else
             echo "Unhandled message: $line" >> ${LOG_FILE}
         fi
