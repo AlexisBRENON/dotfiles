@@ -53,7 +53,7 @@ alias glr='git pull --rebase'
 alias glg='git log --oneline --decorate --graph'
 alias glgs='glg --stat'
 alias glga='glg --all'
-alias glog='git log --abbrev-commit --decorate --graph --format='\''%C(yellow)%h%C(reset) %C(blue)%ai%C(reset) %C(auto)%d%C(reset)%n%C(white)%w(72,4,4)%s%C(reset)'\'
+alias glog='git log --abbrev-commit --decorate --graph --format='\''%C(yellow)%h%C(reset) %C(auto)%d%C(reset)%n%C(8)%aN%C(reset) @ %C(blue)%aD%C(reset)%n%C(white)%w(72,4,4)%s%C(reset)'\'
 alias gloga='glog --all'
 
 alias gm='git merge'
