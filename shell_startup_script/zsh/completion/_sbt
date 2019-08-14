@@ -1,0 +1,195 @@
+#compdef sbt
+
+__sbt-set-project-root-dir() {
+    local dir=`pwd`
+    project_root_dir=`pwd`
+    while [[ $dir != '/' ]]; do
+        if [[ -f "$dir/build.sbt" ]]; then
+            project_root_dir=$dir
+            return 0
+        fi
+        dir="$(dirname "$dir")"
+    done
+    return 1
+}
+
+__sbt-init-cache-dir() {
+    cache_dir="$HOME/.sbt/completion"
+    mkdir -p $cache_dir
+}
+
+__sbt-set-build-file() {
+    local default_sbt_build_file="$project_root_dir/build.sbt"
+
+    # If a build file is specified after '-b' or '--build-file', use this file.
+    sbt_build_file=${${(v)opt_args[(i)-b|--build-file]}:-$default_sbt_build_file}
+}
+
+__sbt-set-cache-name() {
+    # Cache name is constructed from the absolute path of the build file.
+    cache_name=${${sbt_build_file:a}//[^[:alnum:]]/_}
+}
+
+__sbt-set-files-checksum() {
+    # Cache MD5 sum of all SBT scripts and modified timestamps
+    if builtin command -v md5 > /dev/null; then
+        sbt_files_checksum=( $(md5 -q -s "$(cat "$cache_dir/$cache_name" | xargs ls -o 2>/dev/null)") )
+    elif builtin command -v md5sum > /dev/null; then
+        sbt_files_checksum=( $(cat "$cache_dir/$cache_name" | xargs ls -o 2>/dev/null | md5sum | awk '{print $1}') )
+    else
+        _message 'Cannot generate completions as neither md5 nor md5sum exist on \$PATH'
+        return 1
+    fi
+}
+
+__sbt-generate-script-cache() {
+    # Invalidate cache after 3 weeks by default
+    local cache_ttl_mins=${$(echo $SBT_CACHE_TTL_MINUTES):-30240}
+    local script_exclude_pattern=${$(echo $SBT_COMPLETION_EXCLUDE_PATTERN):-"(/(build|integTest|out|target)/)|(/(version|plugin))"}
+    if [[ ! $(find $cache_dir/$cache_name -mmin -$cache_ttl_mins 2>/dev/null) ]]; then
+        zle -R "Generating Sbt build script cache"
+        # Cache all Sbt scripts
+        local -a sbt_build_scripts
+        sbt_build_scripts=( $(find $project_root_dir -type f -name "*.sbt" 2>/dev/null | egrep -v "$script_exclude_pattern") )
+        printf "%s\n" "${sbt_build_scripts[@]}" > $cache_dir/$cache_name
+    fi
+}
+
+__sbt-generate-tasks-cache() {
+    __sbt-set-files-checksum
+
+    local sbt_cmd="sbt"
+
+    zle -R "Generating Sbt task cache from $sbt_build_file"
+
+    # Run sbt to retrieve possible tasks and cache.
+    "$sbt_cmd" \
+      -no-colors \
+      -batch \
+      tasks \
+      | \
+      grep -e "^  [a-z]" \
+      | \
+      awk '
+    {
+      task_start_index = 3;
+      task_length = index(substr($0, task_start_index, length($0)), " ") - 1;
+      desc_start_index = task_start_index + task_length + 1;
+      while (substr($0, desc_start_index, 1) == " ") {
+        desc_start_index++;
+      }
+      task = substr($0, task_start_index, task_length);
+      desc = substr($0, desc_start_index, length($0));
+
+      output_line = "";
+      line = task;
+      offset = 0;
+      while (index(line, ":") > 0) {
+        i = index(line, ":");
+        offset = i
+        output_line = output_line substr(line, 1, offset-1) "\\:";
+        line = substr(line, offset+1, length(line));
+      }
+      output_line = output_line line ":" desc;
+      print output_line;
+    }' > "$cache_dir/$sbt_files_checksum"
+    echo $sbt_files_checksum > $cache_dir/$cache_name.md5
+}
+
+__sbt-completion-init() {
+    local cache_dir cache_name sbt_build_file sbt_files_checksum project_root_dir
+    __sbt-init-cache-dir
+    __sbt-set-project-root-dir
+    __sbt-set-build-file
+    if [[ -f $sbt_build_file ]]; then
+        __sbt-set-cache-name
+        __sbt-generate-script-cache
+        __sbt-set-files-checksum
+        __sbt-generate-tasks-cache
+    fi
+    return 0
+}
+
+__sbt_tasks() {
+    local cache_dir cache_name sbt_build_file sbt_files_checksum project_root_dir
+
+    __sbt-init-cache-dir
+    __sbt-set-project-root-dir
+    __sbt-set-build-file
+    if [[ -f $sbt_build_file ]]; then
+        __sbt-set-cache-name
+        __sbt-generate-script-cache
+        __sbt-set-files-checksum
+
+        # The cache key is md5 sum of all sbt scripts, so it's valid if it exists.
+        if [[ -f $cache_dir/$cache_name.md5 ]]; then
+            local cached_checksum="$(cat $cache_dir/$cache_name.md5)"
+            local -a subprojects tasks
+
+            local cur_depth=$(echo "${cur}" | tr -d -c ':' | wc -c)
+            cur_depth=$(( cur_depth + 1 ))
+            subprojects=(${(f)"$(\
+              awk '
+                /^'"${cur//:/\\\\:}"'/ {
+                  output = ""
+                  depth = 0;
+                  line = $0;
+                  while (index(line, "\\:") > 0) {
+                    i = index(line, "\\:");
+                    output = output substr(line, 0, i-1);
+                    line = substr(line, i+1, length(line));
+                    depth++;
+                    if (depth == '"$cur_depth"') {
+                      print output
+                      next;
+                    }
+                }
+            }' $cache_dir/$cached_checksum | \
+              sort -u)"})
+            disp=(${^subprojects}':')
+            compadd -U -J "Sub-projects" -q -S : -d disp -a subprojects && ret=0
+
+            tasks=(${(f)"$(\
+              grep -Ee "^${cur//:/\\\\:}:*([^\\]*\\:)?[^\\]*:" -e "^[^\\]*:" $cache_dir/$cached_checksum | \
+              sort -u)"})
+            _describe 'Tasks' tasks && ret=0
+        else
+            __sbt-generate-tasks-cache
+        fi
+
+        # Regenerate tasks cache in the background
+        if [[ $sbt_files_checksum != "$(cat $cache_dir/$cache_name.md5)" || ! -f $cache_dir/$sbt_files_checksum || $(wc -c < $cache_dir/$sbt_files_checksum) -le 1 ]]; then
+            $(__sbt-generate-tasks-cache &)
+        fi
+    else
+        _describe 'built-in tasks' '(
+            "clean:Deletes all generated files (the target directory)."
+            "publishLocal:Publishes artifacts (such as jars) to the local Ivy repository as described in Publishing."
+            "publish:Publishes artifacts (such as jars) to the repository defined by the publishTo setting, described in Publishing."
+            "update:Resolves and retrieves external dependencies as described in library dependencies."
+            )' && ret=0
+    fi
+}
+
+__sbt_subcommand() {
+    integer ret=0
+    return ret
+}
+
+_sbt() {
+    local cur=${words[CURRENT]}
+    local curcontext="$curcontext" state
+    integer ret=1
+    typeset -A opt_args
+
+    if [[ $words[CURRENT] != -* && $state != "argument-expected" ]]; then
+        __sbt_tasks && ret=0
+    else
+        curcontext=${curcontext%:*:*}:sbt-$words[1]:
+        __sbt_subcommand && ret=0
+    fi
+
+    return ret
+}
+
+_sbt "$@"
