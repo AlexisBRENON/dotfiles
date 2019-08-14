@@ -4,3 +4,6 @@
 [submodule "spaceship"]
 	path = shell_startup_script/posix/plugin/spaceship-prompt
 	url = git@github.com:AlexisBRENON/spaceship-prompt.git
+[submodule "git-rebase-all"]
+	path = git-rebase-all
+	url = https://github.com/nornagon/git-rebase-all.git
