@@ -1,0 +1,6 @@
+[submodule "gbg"]
+	path = shell_startup_script/posix/plugin/god-bless-git
+	url = git@github.com:AlexisBRENON/god-bless-git.git
+[submodule "spaceship"]
+	path = shell_startup_script/posix/plugin/spaceship-prompt
+	url = git@github.com:AlexisBRENON/spaceship-prompt.git
