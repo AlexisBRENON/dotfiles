@@ -6,3 +6,5 @@ export LUA_CPATH=${HOME}'/.luarocks/lib/lua/5.3/?.so;/usr/lib/lua/5.3/?.so;/usr/
 
 
 TRAVIS_HOME="${HOME}/.travis"
+
+export GOPATH="${HOME}/Documents/Development/projects/go"

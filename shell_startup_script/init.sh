@@ -2,6 +2,7 @@
 
 DEBUG() { :; }
 INFO() { :; }
+WARN() { echo "$@" >&2; }
 case $RC_DEBUG in
   5|4|debug)
     echo "rc debug mode: DEBUG"
