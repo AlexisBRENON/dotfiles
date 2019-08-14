@@ -50,6 +50,8 @@ synchronize() {
     mkdir -p "${BACKUP_BASE}"
     cp -Rv "${MOUNT_POINT}/keepass" "${BACKUP_FOLDER}" 2>&1 >> ${LOG_FILE}
     ls -1 "${BACKUP_BASE}" | head -n-5 | xargs rm -rfv 2>&1 >> ${LOG_FILE}
+    rm -f "${BACKUP_BASE}/latest"
+    ln -s "${BACKUP_FOLDER}" "${BACKUP_BASE}/latest"
     log "Synchronisation done"
 }
 
