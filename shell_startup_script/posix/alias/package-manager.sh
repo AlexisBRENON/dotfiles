@@ -42,10 +42,10 @@ aurman_aliases() {
 }
 yay_aliases() {
   alias pkg-search="yay -Ss"
-  alias pkg-install="yay -S"
+  alias pkg-install="yay --sudoloop -S"
   alias pkg-local-install="sudo pacman -U"
-  alias pkg-update="yay -Syu"
-  alias pkg-upgrade="yay -Syu"
+  alias pkg-update="yay --sudoloop -Syu"
+  alias pkg-upgrade="yay --sudoloop -Syu"
   alias pkg-list="yay -Q"
   alias pkg-remove="yay -Rns"
   alias pkg-clean='yay -Rs $(yay -Qtdq)'
