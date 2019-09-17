@@ -1,4 +1,5 @@
 set nocompatible
+filetype off
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle Setup
@@ -6,21 +7,23 @@ set nocompatible
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+set rtp+=~/.config/nvim/bundle/Vundle.vim
+if has('nvim')
+  call vundle#begin("~/.config/nvim/bundle")
+else
+  call vundle#begin()
+endif
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim' " Vim bundle manager
 Plugin 'sickill/vim-monokai' " Color scheme
 Plugin 'scrooloose/nerdtree' " Vim filesystem explorer
-Plugin 'scrooloose/syntastic' " Vim syntax checker
-Plugin 'tpope/vim-fugitive' " Git integration
+Plugin 'dense-analysis/ale' " Language Server Protocol
 Plugin 'tpope/vim-surround' " Easy surrounding
 Plugin 'coot/CRDispatcher' " Requirement for EnchantedVim
 Plugin 'coot/EnchantedVim' " Persistent very magic regex
-Plugin 'Valloric/YouCompleteMe' " Autocomplete plugin
 Plugin 'Indent-Finder' " Automatic indentation detection
 Plugin 'vim-airline/vim-airline' " Improved status line
 Plugin 'denilsonsa/vim-emoji-complete' " Find and insert emojis
-Plugin 'udalov/kotlin-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
