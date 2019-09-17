@@ -7,3 +7,6 @@
 [submodule "git-rebase-all"]
 	path = git-rebase-all
 	url = https://github.com/nornagon/git-rebase-all.git
+[submodule "move-to-next-monitor"]
+	path = move-to-next-monitor
+	url = https://github.com/jc00ke/move-to-next-monitor.git
