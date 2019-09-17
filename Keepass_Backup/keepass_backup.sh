@@ -61,10 +61,11 @@ tail -n20 ${LOG_FILE} 2>&1 > ${LOG_FILE}
 getMountPoint
 [[ -n "${MOUNT_POINT}" ]] && [[ -e "${MOUNT_POINT}" ]] && synchronize
 
-[[ ! -p "${PIPE_FILE}" ]] && mkfifo ${PIPE_FILE}
+[[ ! -p "${PIPE_FILE}" ]] && log "Creating FIFO file" && mkfifo "${PIPE_FILE}"
 while true
 do
-    if read -r line < ${PIPE_FILE}
+    log "Waiting for message in pipe"
+    if read -r line < "${PIPE_FILE}"
     then
         if [[ "${line}" == "connected" ]]
         then
@@ -75,7 +76,7 @@ do
                 log "Device was never mounted..."
             fi
         else
-            echo "Unhandled message: $line" >> ${LOG_FILE}
+            log "Unhandled message: $line"
         fi
     fi
 done
