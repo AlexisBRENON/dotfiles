@@ -1,34 +1,48 @@
 #! /bin/sh
 
+TRACE_ENABLED="false"
 DEBUG() { :; }
 INFO() { :; }
 WARN() { echo "$@" >&2; }
 case $RC_DEBUG in
-  5|4|debug)
-    echo "rc debug mode: DEBUG"
+  5|trace)
+    TRACE_ENABLED="true"
     DEBUG() { echo "$@" >&2; }
     INFO() { echo "$@"; }
+    DEBUG "rc debug mode: TRACE"
+    ;;
+  4|debug|true)
+    DEBUG() { echo "$@" >&2; }
+    INFO() { echo "$@"; }
+    DEBUG "rc debug mode: DEBUG"
     ;;
   3|2|1|info)
-    echo "rc debug mode: INFO"
     INFO() { echo "$@"; }
+    INFO "rc debug mode: INFO"
     ;;
+  0)
+    WARN() { :; }
 esac
 
 source_file() {
+  set +x
   if [ -r "$1" ]; then
     DEBUG "Sourcing '$1'"
     export RC_SOURCED_FILE="$1"
+    if [ "$TRACE_ENABLED" = "true" ]; then set -x; fi
     . "$1"
+    set +x
     unset RC_SOURCED_FILE
     return 0
   else
     DEBUG "'$1' file not found"
+    if [ "$TRACE_ENABLED" = "true" ]; then set -x; fi
     return 1
   fi
 }
 
 source_submodules() {
+  set +x
   for FILE in "${1}/"*; do
     if [ -f "${FILE}" ] && [ "$(basename $FILE)" != "init.sh" ]; then
       source_file "${FILE}"

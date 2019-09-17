@@ -4,7 +4,7 @@ SHELL_CONFIG_PATH="$(dirname "$RC_SOURCED_FILE")"
 
 INFO "Loading configuration for Zsh"
 
-# Load host specific configuration 
+# Load host specific configuration
 config_file="${SHELL_CONFIG_PATH}/host/${HOST}.sh"
 source_file "$config_file" || INFO "No configuration file for host '${HOST}'"
 
