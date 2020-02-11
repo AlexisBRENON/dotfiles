@@ -1,13 +1,21 @@
 #! /bin/sh
 
 py_activate() {
-  project="${1:-.}"
-  if [ -e "${project}/venv/bin/activate" ]; then
-    . "${project}/venv/bin/activate"
-  else
+  version="${1:-""}"
+  project="${2:-.}"
+
+  venvs="venv:.venv"
+  for venv in $(echo "${venvs}" | tr ":" " "); do
+      if [ -e "${project}/${venv}${version}/bin/activate" ]; then
+            . "${project}/${venv}${version}/bin/activate"
+            found=true
+            break
+      fi
+  done
+  if [[ "${found}" != "true" ]]; then
     echo "No virtual environment found." >&2
   fi
-  unset project
+  unset version project venvs found
 }
 
 # Serve the directory locally
