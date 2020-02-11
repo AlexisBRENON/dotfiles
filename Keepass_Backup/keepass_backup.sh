@@ -5,7 +5,7 @@ set -eu
 BASEDIR=/tmp/keepass_backup
 LOG_FILE=${BASEDIR}/keepass_backup.log
 PIPE_FILE=${BASEDIR}/pipe
-DEVICE_UUID="2279-AF60"
+DEVICE_UUIDS="2279-AF60 4EFC-6574"
 DEVICE_NODE=""
 MOUNT_POINT=""
 
@@ -24,8 +24,13 @@ cleanup() {
 
 getMountPoint() {
     log "Looking for mount point."
-    DEVICE_NODE=$(realpath /dev/disk/by-uuid/${DEVICE_UUID})
-    MOUNT_POINT=$(mount -l | grep "${DEVICE_NODE}" | cut -d' ' -f3)
+    for UUID in ${DEVICE_UUIDS}; do
+        if [[ -e "/dev/disk/by-uuid/${UUID}" ]]; then
+            DEVICE_NODE=$(realpath /dev/disk/by-uuid/${UUID})
+            MOUNT_POINT=$(mount -l | grep "${DEVICE_NODE}" | cut -d' ' -f3)
+            break
+        fi
+    done
     log "$DEVICE_NODE is mounted on '${MOUNT_POINT}'."
 }
 
