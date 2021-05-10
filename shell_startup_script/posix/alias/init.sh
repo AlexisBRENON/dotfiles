@@ -12,6 +12,6 @@ source_file "${ALIAS_CONFIG_PATH}/misc.sh"
 source_file "${ALIAS_CONFIG_PATH}/python.sh"
 source_file "${ALIAS_CONFIG_PATH}/vlc.sh"
 source_file "${ALIAS_CONFIG_PATH}/package-manager.sh"
-source_file "${ALIAS_CONFIG_PATH}/_keecker.sh"
+source_file "${ALIAS_CONFIG_PATH}/docker.sh"
 
 unset ALIAS_CONFIG_PATH
