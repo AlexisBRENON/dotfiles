@@ -10,6 +10,7 @@ __sbt-set-project-root-dir() {
         fi
         dir="$(dirname "$dir")"
     done
+    _message "No project_root_dir found"
     return 1
 }
 
@@ -60,12 +61,12 @@ __sbt-generate-tasks-cache() {
 
     local sbt_cmd="sbt"
 
-    zle -R "Generating Sbt task cache from $sbt_build_file"
-
+    echo $sbt_files_checksum > $cache_dir/$cache_name.md5
     # Run sbt to retrieve possible tasks and cache.
     "$sbt_cmd" \
-      -no-colors \
-      -batch \
+      -Djline.terminal=none \
+      --no-colors \
+      --batch \
       tasks \
       | \
       grep -e "^  [a-z]" \
@@ -93,7 +94,6 @@ __sbt-generate-tasks-cache() {
       output_line = output_line line ":" desc;
       print output_line;
     }' > "$cache_dir/$sbt_files_checksum"
-    echo $sbt_files_checksum > $cache_dir/$cache_name.md5
 }
 
 __sbt-completion-init() {
@@ -105,9 +105,18 @@ __sbt-completion-init() {
         __sbt-set-cache-name
         __sbt-generate-script-cache
         __sbt-set-files-checksum
-        __sbt-generate-tasks-cache
+        __sbt-generate-tasks-cache &
     fi
     return 0
+}
+
+__sbt_builtin_tasks() {
+    _describe 'built-in tasks' '(
+    "clean:Deletes all generated files (the target directory)."
+    "publishLocal:Publishes artifacts (such as jars) to the local Ivy repository as described in Publishing."
+    "publish:Publishes artifacts (such as jars) to the repository defined by the publishTo setting, described in Publishing."
+    "update:Resolves and retrieves external dependencies as described in library dependencies."
+    )'
 }
 
 __sbt_tasks() {
@@ -119,55 +128,62 @@ __sbt_tasks() {
     if [[ -f $sbt_build_file ]]; then
         __sbt-set-cache-name
         __sbt-generate-script-cache
-        __sbt-set-files-checksum
 
         # The cache key is md5 sum of all sbt scripts, so it's valid if it exists.
+        cache_found=false
         if [[ -f $cache_dir/$cache_name.md5 ]]; then
             local cached_checksum="$(cat $cache_dir/$cache_name.md5)"
-            local -a subprojects tasks
+            if [[ -f $cache_dir/$cached_checksum && \
+              $(wc -c < $cache_dir/$cached_checksum) -gt 0 \
+              ]]; then
+              cache_found=true
+              local -a subprojects tasks
 
-            local cur_depth=$(echo "${cur}" | tr -d -c ':' | wc -c)
-            cur_depth=$(( cur_depth + 1 ))
-            subprojects=(${(f)"$(\
-              awk '
-                /^'"${cur//:/\\\\:}"'/ {
-                  output = ""
-                  depth = 0;
-                  line = $0;
-                  while (index(line, "\\:") > 0) {
-                    i = index(line, "\\:");
-                    output = output substr(line, 0, i-1);
-                    line = substr(line, i+1, length(line));
-                    depth++;
-                    if (depth == '"$cur_depth"') {
-                      print output
-                      next;
-                    }
-                }
-            }' $cache_dir/$cached_checksum | \
-              sort -u)"})
-            disp=(${^subprojects}':')
-            compadd -U -J "Sub-projects" -q -S : -d disp -a subprojects && ret=0
+              local cur_depth=$(echo "${cur}" | tr -d -c ':' | wc -c)
+              cur_depth=$(( cur_depth + 1 ))
+              subprojects=(${(f)"$(\
+                awk '
+                  /^'"${cur//:/\\\\:}"'/ {
+                    output = ""
+                    depth = 0;
+                    line = $0;
+                    while (index(line, "\\:") > 0) {
+                      i = index(line, "\\:");
+                      output = output substr(line, 0, i-1);
+                      line = substr(line, i+1, length(line));
+                      depth++;
+                      if (depth == '"$cur_depth"') {
+                        print output
+                        next;
+                      }
+                  }
+              }' $cache_dir/$cached_checksum | \
+                sort -u)"})
+              disp=(${^subprojects}':')
+              compadd -U -J "Sub-projects" -q -S : -d disp -a subprojects && ret=0
 
-            tasks=(${(f)"$(\
-              grep -Ee "^${cur//:/\\\\:}:*([^\\]*\\:)?[^\\]*:" -e "^[^\\]*:" $cache_dir/$cached_checksum | \
-              sort -u)"})
-            _describe 'Tasks' tasks && ret=0
-        else
-            __sbt-generate-tasks-cache
+              tasks=(${(f)"$(\
+                grep -Ee "^${cur//:/\\\\:}:*([^\\]*\\:)?[^\\]*:" -e "^[^\\]*:" $cache_dir/$cached_checksum | \
+                sort -u)"})
+              _describe 'Tasks' tasks && ret=0
+            fi
+        fi
+        if [[ "$cache_found" != "true" ]]; then
+            _message "No task cache found..."
+            __sbt_builtin_tasks && ret=0
         fi
 
         # Regenerate tasks cache in the background
-        if [[ $sbt_files_checksum != "$(cat $cache_dir/$cache_name.md5)" || ! -f $cache_dir/$sbt_files_checksum || $(wc -c < $cache_dir/$sbt_files_checksum) -le 1 ]]; then
-            $(__sbt-generate-tasks-cache &)
+        __sbt-set-files-checksum
+        if [[ ( ! -f $cache_dir/$cache_name.md5 ) || \
+          $sbt_files_checksum != "$(cat $cache_dir/$cache_name.md5)" || \
+          ( ! -f $cache_dir/$sbt_files_checksum ) \
+          ]]; then
+            zle -R "Generating Sbt task cache from $sbt_build_file"
+            __sbt-generate-tasks-cache &
         fi
     else
-        _describe 'built-in tasks' '(
-            "clean:Deletes all generated files (the target directory)."
-            "publishLocal:Publishes artifacts (such as jars) to the local Ivy repository as described in Publishing."
-            "publish:Publishes artifacts (such as jars) to the repository defined by the publishTo setting, described in Publishing."
-            "update:Resolves and retrieves external dependencies as described in library dependencies."
-            )' && ret=0
+      __sbt_builtin_tasks && ret=0
     fi
 }
 
