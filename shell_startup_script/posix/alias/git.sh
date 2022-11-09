@@ -5,9 +5,10 @@ alias g='git'
 alias ga='git add'
 alias gap='git add --patch'
 
-alias gb='git branch'
+gb() { git branch | less --quit-if-one-screen ; }
 alias gba='git branch -a'
 alias gbd='git branch -d'
+gbc() { git branch -vv | grep -E -e ': (disparue|gone)\]' | awk '{print $1}' | xargs git branch -D ; }
 
 alias gbl='git blame -b -w'
 
@@ -41,8 +42,6 @@ alias gfa='git fetch --all --prune'
 alias gfo='git fetch origin'
 
 gls() { git ls-files | grep "$@" ; }
-
-#alias ggsup='git branch --set-upstream-to=origin/$(git_current_branch)'
 
 alias ghh='git help'
 
@@ -94,4 +93,3 @@ alias gtv='git tag | sort -V'
 alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
 alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify -m "--wip-- [skip ci]"'
 alias gbackup='gwip && git push origin HEAD:backup-$(date -I) && gunwip'
-
