@@ -16,6 +16,4 @@ load_plugin() {
     unset plugin_name
 }
 
-load_plugin god_bless_git
-
 unset PLUGIN_CONFIG_PATH
