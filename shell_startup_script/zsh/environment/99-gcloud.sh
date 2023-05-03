@@ -1,6 +1,6 @@
 #! /usr/bin/env zsh
 
-gcloud_comp="/opt/google-cloud-sdk/completion.zsh.inc"
+gcloud_comp="$(find /opt -path "*google-cloud*" -name "completion.zsh.inc" 2>/dev/null)"
 
 if command -vp gcloud > /dev/null; then
     if [ -e "$gcloud_comp" ]; then
