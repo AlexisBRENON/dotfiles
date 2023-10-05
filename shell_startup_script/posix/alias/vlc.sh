@@ -32,3 +32,6 @@ EOS
     fi
 }
 
+vlc_spotify_record() {
+    cvlc 'jack://channels=2:ports=output_.*' --sout='#transcode{vcodec=none,acodec=mp3,ab=128,channels=2,samplerate=44100,scodec=none}:std{access=file,mux=mp3,dst='$1'}'
+}
